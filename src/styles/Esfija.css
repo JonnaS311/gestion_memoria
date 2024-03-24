@@ -1,0 +1,19 @@
+.fija {
+    margin: 2rem;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    width: 70%;
+    margin-left: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info {
+    width: 30%;
+}
