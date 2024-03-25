@@ -1,6 +1,10 @@
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import TipoGestion from './TipoGestion';
 import '../styles/Nav.css';
+import Adder from './Adder';
+import ParticionadorFijo from './ParticionadorFijo';
+import SelectorAjuste from './SelectorAjuste';
+import { dinamicaCC } from '../utils/logica_recompactacion'
 
 const Nav = () => {
     return (
@@ -17,11 +21,11 @@ const Nav = () => {
                     </ul>
                 </nav>
                 <Routes>
-                    <Route path='/'></Route>
-                    <Route path="/fija" element={<TipoGestion></TipoGestion>}></Route>
-                    <Route path="/variable" element={<TipoGestion></TipoGestion>}></Route>
-                    <Route path="/dinamica" element={<TipoGestion></TipoGestion>}></Route>
-                    <Route path="/compactacion" element={<TipoGestion></TipoGestion>}></Route>
+                    <Route path='/' element={<Adder></Adder>}></Route>
+                    <Route path="/fija" element={<ParticionadorFijo></ParticionadorFijo>}></Route>
+                    <Route path="/variable" element={<TipoGestion algoritmo={dinamicaCC}></TipoGestion>}></Route>
+                    <Route path="/dinamica" element={<SelectorAjuste></SelectorAjuste>}></Route>
+                    <Route path="/compactacion" element={<TipoGestion algoritmo={dinamicaCC}></TipoGestion>}></Route>
                 </Routes>
 
             </Router>

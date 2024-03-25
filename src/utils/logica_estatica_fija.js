@@ -1,8 +1,7 @@
 // Asignamos una memoria total de 16MiB
 const RAM = 16777216
 
-var espacio_particionado = 1048576 //parseInt(prompt("valor de la particion en KiB"))*1024
-
+let espacio_particionado = 1048576 //parseInt(prompt("valor de la particion en KiB"))*1024
 // nombre-proceso | inicio_mem | final_mem
 let tabla = []
 let procesos_cargados = []
@@ -14,6 +13,18 @@ tabla.push(['SO',0, sistema_operativo])
 // cargamos las particiones en la tabla
 for (let i = 0; i < parseInt((RAM - 1048576)/espacio_particionado); i++) {
     tabla.push([undefined,tabla[i][2]+1,tabla[i][2]+espacio_particionado])
+}
+
+export const setter_particion = (val) =>{
+    espacio_particionado = parseInt(val)
+    console.log(espacio_particionado)
+    tabla = []
+    procesos_cargados = []
+    sistema_operativo = 1048575
+    tabla.push(['SO',0, sistema_operativo])
+    for (let i = 0; i < parseInt((RAM - 1048576)/espacio_particionado); i++) {
+        tabla.push([undefined,tabla[i][2]+1,tabla[i][2]+espacio_particionado])
+    }
 }
 
 export function estaticas_fija(programas) {

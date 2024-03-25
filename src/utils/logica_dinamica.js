@@ -12,15 +12,15 @@ tabla.push([undefined,tabla[0][2]+1,RAM-1])
 
 
 function espacio_mayor(tabla, tamaño_min) {
-    posicion_mayor = 0
-    tamaño_bloque = 0
+    let posicion_mayor = 0
+    let tamaño_bloque = 0
     for (let i = 1; i< tabla.length; i++) {
        if (tabla[i][0] === undefined && tamaño_min <= tabla[i][2]-tabla[i][1] && tamaño_bloque < tabla[i][2]-tabla[i][1]){
             tamaño_bloque = tabla[i][2]-tabla[i][1]
             posicion_mayor = i
        }
     }
-    if (posicion_mayor != 0){
+    if (posicion_mayor !== 0){
         return posicion_mayor
     }else{
         return -1
@@ -28,9 +28,9 @@ function espacio_mayor(tabla, tamaño_min) {
 }
 
 function espacio_ajustado(tabla, tamaño_min) {
-    posicion_mayor = 0
-    tamaño_bloque = 0
-    mejor_ajuste = null
+    let posicion_mayor = 0
+    let tamaño_bloque = 0
+    let mejor_ajuste = null
     for (let i = 1; i< tabla.length; i++) {
        if (tabla[i][0] === undefined && tamaño_min <= tabla[i][2]-tabla[i][1] ){
             if (mejor_ajuste === null ||  tamaño_bloque > tabla[i][2]-tabla[i][1]) {
@@ -40,24 +40,24 @@ function espacio_ajustado(tabla, tamaño_min) {
             }       
        }
     }
-    if (posicion_mayor != 0){
+    if (posicion_mayor !== 0){
         return posicion_mayor
     }else{
         return -1
     }
 }
 
-function dinamica(programas, ajuste) {
+export function dinamica(programas, ajuste) {
     let nombres_procesos = Object.keys(programas)
     let aux_procesos_car = procesos_cargados.slice()
     //verificamos si el proceso ya no está cargado
-    for(k = 0; k < procesos_cargados.length;k++){
+    for(let k = 0; k < procesos_cargados.length;k++){
         if(!nombres_procesos.includes(procesos_cargados[k])){
                 let proceso_eliminar = procesos_cargados[k]
-                for(i = 0; i<tabla.length;i++){
+                for(let i = 0; i<tabla.length;i++){
                     try {
                         let aux_fila = tabla[i][0]
-                        if( aux_fila== proceso_eliminar){
+                        if( aux_fila === proceso_eliminar){
                             // eliminamos el proceso de la tabla y de la lista de procesos cargados
                             tabla[i][0] = undefined
                             aux_procesos_car = aux_procesos_car.filter((element) => element !== proceso_eliminar);
@@ -88,7 +88,7 @@ function dinamica(programas, ajuste) {
             
             // peor ajuste
             if (ajuste === 'peor') {
-                posicion_inicial = espacio_mayor(tabla,programas[nombres_procesos[i]])
+                let posicion_inicial = espacio_mayor(tabla,programas[nombres_procesos[i]])
                 tabla.splice(posicion_inicial,0,[nombres_procesos[i],tabla[posicion_inicial-1][2]+1,tabla[posicion_inicial-1][2]+programas[nombres_procesos[i]]])
                 tabla[posicion_inicial+1][1]= tabla[posicion_inicial][2]+1
                 procesos_cargados.push(nombres_procesos[i])
@@ -96,21 +96,21 @@ function dinamica(programas, ajuste) {
 
             // mejor ajuste 
             if (ajuste === 'mejor') {
-                posicion_inicial = espacio_ajustado(tabla,programas[nombres_procesos[i]])
+                let posicion_inicial = espacio_ajustado(tabla,programas[nombres_procesos[i]])
                 tabla.splice(posicion_inicial,0,[nombres_procesos[i],tabla[posicion_inicial-1][2]+1,tabla[posicion_inicial-1][2]+programas[nombres_procesos[i]]])
                 tabla[posicion_inicial+1][1]= tabla[posicion_inicial][2]+1
                 procesos_cargados.push(nombres_procesos[i])
             }
 
             // primer ajuste
-            for(j = 0; j<tabla.length; j++){
+            for(let j = 0; j<tabla.length; j++){
                 let posicion_inicial = tabla[j][2]
                 try {
                     // añadimos el proceso en un espacio vacio
                     if (tabla[j][0] === undefined && ajuste === 'primer'){
                         let tamanio = tabla[j][2]-tabla[j][1]
                         if(tamanio >= programas[nombres_procesos[i]]){
-                            posicion_inicial = tabla[j-1][2]
+                           posicion_inicial = tabla[j-1][2]
                             tabla.splice(j,0,[nombres_procesos[i],posicion_inicial+1,posicion_inicial+programas[nombres_procesos[i]]])
                             tabla[j+1][1]= tabla[j][2]+1
                             procesos_cargados.push(nombres_procesos[i])

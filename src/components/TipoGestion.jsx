@@ -11,10 +11,10 @@ import { Bar } from 'react-chartjs-2';
 import '../styles/Esfija.css';
 import Cargador from './Cargador';
 import Tabla from './Tabla';
-import { options, dataset } from '../utils/stack_bar'
-import { estaticas_fija } from '../utils/logica_estatica_fija'
+import { options } from '../utils/stack_bar'
 import { useState, createContext, useContext, useEffect } from 'react';
 import Descargar from './Descargar';
+import { tab } from '@testing-library/user-event/dist/tab';
 
 ChartJS.register(
     CategoryScale,
@@ -37,16 +37,16 @@ export const useTabla = () => {
     return useContext(TablaContext);
 };
 
-const TipoGestion = () => {
+const TipoGestion = (props) => {
 
-    const generarDataset = () =>{
+    const generarDataset = () => {
         let objeto = []
         for (let index = 0; index < Object.keys(tabla).length; index++) {
             const element = tabla[Object.keys(tabla)[index]];
             if (element[0] !== undefined) {
-                objeto.push({label:element[0],data:[element[2]-element[1]], backgroundColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})`}) 
+                objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})` })
             } else {
-                objeto.push({label:element[0],data:[element[2]-element[1]], backgroundColor: `rgba(255, 255, 255, 0)`,borderColor: `rgb(0,0,0,0.5)`, borderWidth: 1,})     
+                objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: `rgba(255, 255, 255, 0)`, borderColor: `rgb(0,0,0,0.5)`, borderWidth: 1, })
             }
         }
         return objeto
@@ -62,30 +62,41 @@ const TipoGestion = () => {
 
     const updateChartData = () => {
         // nuevos datos
-        setChart({
+        let datos = {
             ...chart,
             datasets: generarDataset()
-        });
+        }
+        setChart(datos);
     };
 
-    const cambiarOperacion = () =>{
+    const cambiarOperacion = () => {
         setOperacion(!operacion)
     }
 
     useEffect(() => {
-        setTabla(estaticas_fija(proceso))
+        let auxTabla
+        if (props.ajuste !== undefined) {
+            auxTabla = props.algoritmo(proceso,props.ajuste)
+        } else {
+            auxTabla = props.algoritmo(proceso)
+    
+        }
+        setTabla(auxTabla)
         updateChartData()
-        generarDataset()
     }, [proceso])
+
+    useEffect(() => {
+        updateChartData()
+    }, [tabla])
 
     return (
         <div className='fija'>
             <div className='info'>
                 {operacion && <button className='cambio' onClick={cambiarOperacion}>Eliminar Procesos</button>}
                 {!operacion && <button className='cambio' onClick={cambiarOperacion}>Añadir Procesos</button>}
-                <ProcesoContext.Provider value={{ proceso, setProceso}}>
-                    {operacion && <Cargador></Cargador> }
-                    {!operacion && <Descargar></Descargar> } 
+                <ProcesoContext.Provider value={{ proceso, setProceso }}>
+                    {operacion && <Cargador></Cargador>}
+                    {!operacion && <Descargar></Descargar>}
                 </ProcesoContext.Provider>
                 <TablaContext.Provider value={{ tabla }}>
                     <Tabla></Tabla>
