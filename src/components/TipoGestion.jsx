@@ -11,9 +11,10 @@ import { Bar } from 'react-chartjs-2';
 import '../styles/Esfija.css';
 import Cargador from './Cargador';
 import Tabla from './Tabla';
-import { options, data, dataset } from '../utils/stack_bar'
+import { options, dataset } from '../utils/stack_bar'
 import { estaticas_fija } from '../utils/logica_estatica_fija'
 import { useState, createContext, useContext, useEffect } from 'react';
+import Descargar from './Descargar';
 
 ChartJS.register(
     CategoryScale,
@@ -36,29 +37,62 @@ export const useTabla = () => {
     return useContext(TablaContext);
 };
 
-const TipoGestion = ({algoritmo}) => {
+const TipoGestion = () => {
+
+    const generarDataset = () =>{
+        let objeto = []
+        for (let index = 0; index < Object.keys(tabla).length; index++) {
+            const element = tabla[Object.keys(tabla)[index]];
+            if (element[0] !== undefined) {
+                objeto.push({label:element[0],data:[element[2]-element[1]], backgroundColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})`}) 
+            } else {
+                objeto.push({label:element[0],data:[element[2]-element[1]], backgroundColor: `rgba(255, 255, 255, 0)`,borderColor: `rgb(0,0,0,0.5)`, borderWidth: 1,})     
+            }
+        }
+        return objeto
+    }
 
     const [proceso, setProceso] = useState({})
-    const [tabla, setTabla] = useState(undefined)
-    const [a, setA] = useState(0)
-    
+    const [tabla, setTabla] = useState([])
+    const [operacion, setOperacion] = useState(true)
+    const [chart, setChart] = useState({
+        labels: ['Memoria 16 Mb'],
+        datasets: []
+    })
+
+    const updateChartData = () => {
+        // nuevos datos
+        setChart({
+            ...chart,
+            datasets: generarDataset()
+        });
+    };
+
+    const cambiarOperacion = () =>{
+        setOperacion(!operacion)
+    }
+
     useEffect(() => {
         setTabla(estaticas_fija(proceso))
-        setA(a => a+1)
+        updateChartData()
+        generarDataset()
     }, [proceso])
-    
+
     return (
         <div className='fija'>
             <div className='info'>
-                <ProcesoContext.Provider value={{ proceso, setProceso }}>
-                    <Cargador></Cargador>
+                {operacion && <button className='cambio' onClick={cambiarOperacion}>Eliminar Procesos</button>}
+                {!operacion && <button className='cambio' onClick={cambiarOperacion}>Añadir Procesos</button>}
+                <ProcesoContext.Provider value={{ proceso, setProceso}}>
+                    {operacion && <Cargador></Cargador> }
+                    {!operacion && <Descargar></Descargar> } 
                 </ProcesoContext.Provider>
-                <TablaContext.Provider value={{tabla}}>
-                <Tabla></Tabla>
+                <TablaContext.Provider value={{ tabla }}>
+                    <Tabla></Tabla>
                 </TablaContext.Provider>
             </div>
             <div className='bar'>
-                <Bar options={options} data={data} />
+                <Bar options={options} data={chart} />
             </div>
         </div>
     );

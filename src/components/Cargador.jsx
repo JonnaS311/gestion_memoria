@@ -44,7 +44,7 @@ const Cargador = () => {
 
   // definimos las funciones
   const info = (value, e) => {
-    alert(`text: ${value['text']} data: ${value['data']} bss: ${value['bss']}`)
+    alert(`text: ${value['text']} | data: ${value['data']} | bss: ${value['bss']}`)
   }
 
   function add(index) {

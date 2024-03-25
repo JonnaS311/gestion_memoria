@@ -4,6 +4,9 @@ export const options = {
         display: true,
         text: 'Gestión de memoria Estatica de Tamaño Fijo',
       },
+      legend: {
+        display: false
+      }
     },
     responsive: true,
     scales: {
@@ -12,28 +15,11 @@ export const options = {
       },
       y: {
         stacked: true,
+        ticks: {
+          // cambia los limites de la gráfica
+          stepSize: 1048576
+        }
       },
     },
   };
   
-  const labels = ['Memoria 16 Mb'];
-  
-  export const dataset = [
-   /* {
-      label: 'Dataset 1',
-      data: [1048576],
-      backgroundColor: 'rgb(255, 99, 132)',
-    }, estructura del dataset*/
-    {
-      label: 'SO',
-      data: [1048576],
-      backgroundColor: 'rgb(255, 99, 132)',
-    }
-  ]
-  
-  export const data = {
-    labels,
-    datasets: dataset
-  };
-
-
