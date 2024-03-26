@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TipoGestion from './TipoGestion';
 import { setter_particion, estaticas_fija } from '../utils/logica_estatica_fija'
+import '../styles/ParticionadorFijo.css'
 
 const ParticionadorFijo = () => {
     const [particion, setParticion] = useState(false)
@@ -10,16 +11,20 @@ const ParticionadorFijo = () => {
         setTamanio(e.target.value)
     }
 
-    const cambiar = (e) =>{
+    const cambiar = (e) => {
         setter_particion(tamanio)
         setParticion(!particion)
     }
     return (
-        <div>
+        <div className='principal'>
             {!particion && (
-                <div>
-                    <input type="number" name='tamanio' onChange={change} value={tamanio}/>
-                    <button onClick={cambiar}>Definir partición</button>
+                <div className='cont'>
+                    <div>
+                        <h2>Algoritmo de memoria estática con partición fija</h2>
+                        <span>El siguiente input te permite definir el tamaño de la particion</span>
+                    </div>
+                    <input type="number" name='tamanio' onChange={change} value={tamanio} className='entrada' />
+                    <button onClick={cambiar} className='my-button'>Definir partición</button>
                 </div>
             )}
             {particion && (

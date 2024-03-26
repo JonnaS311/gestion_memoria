@@ -5,6 +5,7 @@ import Adder from './Adder';
 import ParticionadorFijo from './ParticionadorFijo';
 import SelectorAjuste from './SelectorAjuste';
 import { dinamicaCC } from '../utils/logica_recompactacion'
+import ParticionadorVar from './ParticionadorVar';
 
 const Nav = () => {
     return (
@@ -23,7 +24,7 @@ const Nav = () => {
                 <Routes>
                     <Route path='/' element={<Adder></Adder>}></Route>
                     <Route path="/fija" element={<ParticionadorFijo></ParticionadorFijo>}></Route>
-                    <Route path="/variable" element={<TipoGestion algoritmo={dinamicaCC}></TipoGestion>}></Route>
+                    <Route path="/variable" element={<ParticionadorVar></ParticionadorVar>}></Route>
                     <Route path="/dinamica" element={<SelectorAjuste></SelectorAjuste>}></Route>
                     <Route path="/compactacion" element={<TipoGestion algoritmo={dinamicaCC}></TipoGestion>}></Route>
                 </Routes>

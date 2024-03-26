@@ -17,7 +17,6 @@ for (let i = 0; i < parseInt((RAM - 1048576)/espacio_particionado); i++) {
 
 export const setter_particion = (val) =>{
     espacio_particionado = parseInt(val)
-    console.log(espacio_particionado)
     tabla = []
     procesos_cargados = []
     sistema_operativo = 1048575

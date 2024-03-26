@@ -6,4 +6,5 @@
     /* Estilos para que el footer se quede fijo en la parte inferior */
     bottom: 0;
     width: 100%;
+    position: fixed;
   }

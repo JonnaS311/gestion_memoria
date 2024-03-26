@@ -14,7 +14,6 @@ import Tabla from './Tabla';
 import { options } from '../utils/stack_bar'
 import { useState, createContext, useContext, useEffect } from 'react';
 import Descargar from './Descargar';
-import { tab } from '@testing-library/user-event/dist/tab';
 
 ChartJS.register(
     CategoryScale,
@@ -77,6 +76,7 @@ const TipoGestion = (props) => {
         let auxTabla
         if (props.ajuste !== undefined) {
             auxTabla = props.algoritmo(proceso,props.ajuste)
+            console.log(auxTabla)
         } else {
             auxTabla = props.algoritmo(proceso)
     
