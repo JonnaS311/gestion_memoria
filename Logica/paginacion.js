@@ -7,6 +7,7 @@ var offset = Math.pow(2, 24 - paginas)
 // Tabla gráfica: nombre-proceso-segmento | inicio_mem | final_mem | Marco
 let tabla = []
 
+
 // Tabla de marcos: Marco | PDI ---> Donde el PID: -1 - libre / 0 - SO / > 0 - Ocupado
 let tablaMarcos = []
 
@@ -26,6 +27,7 @@ for (let i = 0; i < parseInt((RAM) / offset); i++) {
 
 // cargamos el sistema operativo a la tabla
 const segmentosSO = Math.ceil(sistema_operativo / offset);
+
 
 // Llenar los segmentos necesarios con el sistema operativo
 for (let i = 0; i < segmentosSO; i++) {
@@ -173,7 +175,6 @@ let c = { 'p2': { 'id': 1, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack':
 let d = { 'p2': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
 paginacion(a)
 paginacion(b)
-eliminar_proceso_paginacion(a)
 paginacion(c)
 console.log(tabla)
 
