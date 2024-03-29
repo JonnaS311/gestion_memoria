@@ -17,14 +17,15 @@ const SelectorAjuste = () => {
     return (
         <div>
             {vista && (
-                <div>
-                    <span>ajuste actual: {ajuste}</span>
+                <div className='cont'>
+                    <h2>Algoritmo de memoria Dinamica sin compacatación</h2>
+                    <span>Ajuste actual: {ajuste}</span>
                     <select name="ajuste" onChange={cambio}>
                         <option value="primer" selected>Primer ajuste</option>
                         <option value="mejor">Mejor ajuste</option>
                         <option value="peor">Peor ajuste</option>
                     </select>
-                    <button onClick={aplicar}>Usar Ajuste</button>
+                    <button onClick={aplicar} className='my-button'>Usar Ajuste</button>
                 </div>
             )}
             {!vista && (

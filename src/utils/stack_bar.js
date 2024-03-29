@@ -1,4 +1,5 @@
 export const options = {
+  maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
@@ -8,13 +9,14 @@ export const options = {
         display: false
       }
     },
-    responsive: true,
+    responsive: false,
     scales: {
       x: {
         stacked: true,
       },
       y: {
         stacked: true,
+        beginAtZero: true,
         ticks: {
           // cambia los limites de la gráfica
           stepSize: 1048576

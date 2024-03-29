@@ -5,6 +5,32 @@
     text-align: center;
     /* Estilos para que el footer se quede fijo en la parte inferior */
     bottom: 0;
-    width: 100%;
-    position: fixed;
+    width: 100%
+  }
+
+  select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    appearance: none; /* Para eliminar los estilos nativos del sistema operativo */
+  }
+  
+  /* Estilos al pasar el cursor sobre el select */
+  select:hover {
+    border-color: #eb4848;
+  }
+  
+  /* Estilos al enfocar el select */
+  select:focus {
+    outline: none; /* Elimina el contorno de enfoque predeterminado */
+    border-color: #de8c8c;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Estilos para el borde cuando está deshabilitado */
+  select:disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }

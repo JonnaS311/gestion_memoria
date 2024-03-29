@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TipoGestion from './TipoGestion';
 import { estatica_variable, RAM, setterParticiones } from '../utils/logica_estatica_variable'
+import '../styles/Particionador.css'
 
 const ParticionadorVar = () => {
     const [ajuste, setAjuste] = useState('primer')
@@ -21,7 +22,7 @@ const ParticionadorVar = () => {
     }
 
     const add = (e) => {
-        if (tamanio <= total && parseInt(tamanio)>0) {
+        if (tamanio <= total && parseInt(tamanio) > 0) {
             let aux = particiones
             aux.push(parseInt(tamanio))
             setParticiones(aux)
@@ -31,34 +32,40 @@ const ParticionadorVar = () => {
     }
 
     return (
-        <div>
+        <div className='principal'>
             {vista && (
-                <div>
-                    <span>memoria por asignar: {total}</span>
-                    <span>ajuste actual: {ajuste}</span>
-                    <select name="ajuste" onChange={cambio}>
-                        <option value="primer" selected>Primer ajuste</option>
-                        <option value="mejor">Mejor ajuste</option>
-                        <option value="peor">Peor ajuste</option>
-                    </select>
-                    <div>
-                        <input type="number" name='tamanio' onChange={change} value={tamanio} />
-                        <button onClick={add}>Definir partición</button>
+                <div className='flex-row'>
+                    <div className='cont'>
+                        <h2>Algoritmo de memoria estática con partición variable</h2>
+                        <span>Memoria por asignar: {total}</span>
+                        <select name="ajuste" onChange={cambio}>
+                            <option value="primer" selected>Primer ajuste</option>
+                            <option value="mejor">Mejor ajuste</option>
+                            <option value="peor">Peor ajuste</option>
+                        </select>
+                        <div>
+                            <input type="number" name='tamanio' onChange={change} value={tamanio} className='entrada' />
+                            <button onClick={add} className='my-button particionar'>Definir partición</button>
+                        </div>
+                        <button onClick={aplicar} className='my-button'>Simular</button>
                     </div>
-                    <button onClick={aplicar}>Simular</button>
+                    <div className='tablaPa'>
                     <table>
                         <tr>
                             <th>Tamaño de la partición</th>
                         </tr>
                         {particiones.map((child, index) => {
                             return (
-                                    <tr key={index}>
-                                        <td>{child} Bytes</td>
-                                    </tr>
+                                <tr key={index}>
+                                    <td>{child} Bytes</td>
+                                </tr>
                             )
                         })}
                     </table>
+                    </div>
+                   
                 </div>
+
             )}
             {!vista && (
                 <TipoGestion algoritmo={estatica_variable} ajuste={ajuste}></TipoGestion>

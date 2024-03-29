@@ -1,5 +1,7 @@
 .principal {
+    
     position: relative;
+    padding-bottom: 10rem;
 }
 
 .cont {
@@ -9,7 +11,7 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 4em;
+    gap: 2rem;
     align-items: center;
     justify-content: center;
 }
@@ -43,4 +45,26 @@
   }
   .my-button:active {
     background-color: rgb(101, 9, 28);
+  }
+
+  .particionar {
+    border-radius: 5rem;
+    margin: 2rem;
+  }
+
+  .tablaPa {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 90%;
+  }
+
+  .flex-row{
+    display: flex;
+    flex: 10;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flex-row .tablaPa:nth-child(2) {
+    background-color: whitesmoke;
   }

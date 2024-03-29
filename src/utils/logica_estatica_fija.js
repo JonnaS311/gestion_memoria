@@ -4,7 +4,7 @@ const RAM = 16777216
 let espacio_particionado = 1048576 //parseInt(prompt("valor de la particion en KiB"))*1024
 // nombre-proceso | inicio_mem | final_mem
 let tabla = []
-let procesos_cargados = []
+export let procesos_cargados = []
 
 // cargamos el sistema operativo en la RAM
 let sistema_operativo = 1048575

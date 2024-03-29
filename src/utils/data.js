@@ -33,3 +33,7 @@ export let data = [
       
     },
   ]
+
+export const llamarLocalStorage = () =>{
+  localStorage.setItem('data', JSON.stringify(data));
+}

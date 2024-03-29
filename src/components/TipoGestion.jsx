@@ -14,6 +14,8 @@ import Tabla from './Tabla';
 import { options } from '../utils/stack_bar'
 import { useState, createContext, useContext, useEffect } from 'react';
 import Descargar from './Descargar';
+import { color } from '../utils/color';
+import { procesos_cargados } from '../utils/logica_estatica_fija';
 
 ChartJS.register(
     CategoryScale,
@@ -43,7 +45,7 @@ const TipoGestion = (props) => {
         for (let index = 0; index < Object.keys(tabla).length; index++) {
             const element = tabla[Object.keys(tabla)[index]];
             if (element[0] !== undefined) {
-                objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: `rgb(${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)}, ${parseInt(Math.random() * 255)})` })
+                objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: color(index) })
             } else {
                 objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: `rgba(255, 255, 255, 0)`, borderColor: `rgb(0,0,0,0.5)`, borderWidth: 1, })
             }
@@ -69,17 +71,22 @@ const TipoGestion = (props) => {
     };
 
     const cambiarOperacion = () => {
+        /*if (operacion) {
+            if (JSON.stringify(procesos_cargados) !== JSON.stringify(Object.keys(proceso))) {
+                for (let index = 0; index < procesos_cargados.length; index++) {
+
+                }
+            }
+        }*/
         setOperacion(!operacion)
     }
 
     useEffect(() => {
         let auxTabla
         if (props.ajuste !== undefined) {
-            auxTabla = props.algoritmo(proceso,props.ajuste)
-            console.log(auxTabla)
+            auxTabla = props.algoritmo(proceso, props.ajuste)
         } else {
             auxTabla = props.algoritmo(proceso)
-    
         }
         setTabla(auxTabla)
         updateChartData()
@@ -103,7 +110,7 @@ const TipoGestion = (props) => {
                 </TablaContext.Provider>
             </div>
             <div className='bar'>
-                <Bar options={options} data={chart} />
+                <Bar options={options} data={chart} width={800} height={1000}/>
             </div>
         </div>
     );
