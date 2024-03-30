@@ -1,5 +1,5 @@
-const RAM = 16777216;
-let segmento = 8; // Dato a preguntar
+let RAM = 16777216;
+let segmento = 4; // Dato a preguntar
 let offset = Math.pow(2, 24 - segmento);
 
 let contadorSegmentos = {};
@@ -21,66 +21,133 @@ if (remaining > 0) {
     tabla.push([undefined, inicio, RAM - 1]);
 }
 
-function segmentacion(programa) {
+
+
+function espacio_mayor(tabla, tamaño_min) {
+    posicion_mayor = 0
+    tamaño_bloque = 0
+    for (let i = 1; i< tabla.length; i++) {
+       if (tabla[i][0] === undefined && tamaño_min <= tabla[i][2]-tabla[i][1] && tamaño_bloque < tabla[i][2]-tabla[i][1]){
+            tamaño_bloque = tabla[i][2]-tabla[i][1]
+            posicion_mayor = i
+       }
+    }
+    if (posicion_mayor != 0){
+        return posicion_mayor
+    }else{
+        return -1
+    }
+}
+
+function espacio_ajustado(tabla, tamaño_min) {
+    posicion_mayor = 0
+    tamaño_bloque = 0
+    mejor_ajuste = null
+    for (let i = 1; i< tabla.length; i++) {
+       if (tabla[i][0] === undefined && tamaño_min <= tabla[i][2]-tabla[i][1] ){
+            if (mejor_ajuste === null ||  tamaño_bloque > tabla[i][2]-tabla[i][1]) {
+                mejor_ajuste = 1
+                tamaño_bloque = tabla[i][2]-tabla[i][1]
+                posicion_mayor = i
+            }       
+       }
+    }
+    if (posicion_mayor != 0){
+        return posicion_mayor
+    }else{
+        return -1
+    }
+}
+function segmentacion(programa, ajuste) {
     let proceso = Object.keys(programa);
 
-    for (let i = 0; i < proceso.length; i++) {
-        let nombre = proceso[i];
-        let programaInfo = programa[nombre];
-        let id = programaInfo.id;
-        let text = programaInfo.text;
-        let data = programaInfo.data;
-        let bss = programaInfo.bss;
-        let stack = programaInfo.stack;
-        let heap = programaInfo.heap;
+    switch(ajuste) {
+        case 'primer':
+            for (let i = 0; i < proceso.length; i++) {
+                let nombre = proceso[i];
+                let programaInfo = programa[nombre];
+                let id = programaInfo.id;
+                let text = programaInfo.text;
+                let data = programaInfo.data;
+                let bss = programaInfo.bss;
+                let stack = programaInfo.stack;
+                let heap = programaInfo.heap;
+        
+                asignarSegmento(nombre, id, text, 'text');
+                asignarSegmento(nombre, id, data, 'data');
+                asignarSegmento(nombre, id, bss, 'bss');
+                asignarSegmento(nombre, id, heap, 'heap');
+                asignarSegmento(nombre, id, stack, 'stack');
+            }
+            function asignarSegmento(nombre, id, tamaño, tipo) {
+                if (contadorSegmentos[nombre] === undefined) {
+                    contadorSegmentos[nombre] = {};
+                }
+            
+                if (contadorSegmentos[nombre][id] === undefined) {
+                    contadorSegmentos[nombre][id] = 1;
+                }
+            
+                let cantidadSegmentos = Math.ceil(tamaño / offset);
+            
+                // Buscar el primer segmento undefined que sea lo suficientemente grande
+                let indexUndefined = tabla.findIndex(seg => seg[0] === undefined && (seg[2] - seg[1] + 1) >= tamaño);
+                if (indexUndefined === -1) {
+                    console.log('No hay suficiente espacio para el proceso');
+                    return;
+                }
+            
+                let inicio = tabla[indexUndefined][1];
+                let fin = inicio + tamaño - 1;
+            
+                for (let i = 0; i < cantidadSegmentos; i++) {
+                    let tamañoSegmento = Math.min(offset, tamaño - i * offset);
+                    fin = inicio + tamañoSegmento - 1;
+                    tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
+                    inicio = fin + 1;
+                    contadorSegmentos[nombre][id]++;
+                }
+            
+                // Actualizar el segmento undefined
+                if (inicio <= tabla[indexUndefined][2]) {
+                    tabla[indexUndefined][1] = inicio;
+                } else {
+                    tabla.splice(indexUndefined, 1);
+                }
+            
+                // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
+                if (inicio <= fin) {
+                    tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
+                }
+            
+                // Mover el segmento undefined al final de la tabla
+                let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
+                tabla.push(undefinedSegment);
+            
+                // Reordenar la tabla por inicio de segmento
+                tabla.sort((a, b) => a[1] - b[1]);
+            }
+            
+            
+            // Reordenar la tabla por inicio de segmento
+            tabla.sort((a, b) => a[1] - b[1]);
 
-        asignarSegmento(nombre, id, text, 'text');
-        asignarSegmento(nombre, id, data, 'data');
-        asignarSegmento(nombre, id, bss, 'bss');
-        asignarSegmento(nombre, id, heap, 'heap');
-        asignarSegmento(nombre, id, stack, 'stack');
-    }
-
-    let indexUndefined = tabla.findIndex(seg => seg[0] === undefined);
-    if (indexUndefined !== -1) {
-        tabla.splice(indexUndefined, 1);
-        let finUltimoSegmento = tabla[tabla.length - 1][2];
-        tabla.push([undefined, finUltimoSegmento + 1, RAM - 1]);
-    }
-
-    function asignarSegmento(nombre, id, tamaño, tipo) {
-        if (contadorSegmentos[nombre] === undefined) {
-            contadorSegmentos[nombre] = {};
-        }
-
-        if (contadorSegmentos[nombre][id] === undefined) {
-            contadorSegmentos[nombre][id] = 1;
-        }
-
-        let cantidadSegmentos = Math.ceil(tamaño / offset);
-        let inicio = asignarInicioSegmento(nombre, id);
-        let fin = inicio + tamaño - 1;
-
-        for (let i = 0; i < cantidadSegmentos; i++) {
-            let tamañoSegmento = Math.min(offset, tamaño - i * offset);
-            fin = inicio + tamañoSegmento - 1;
-            tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
-            inicio = fin + 1;
-            contadorSegmentos[nombre][id]++;
-        }
-    }
-
-    function asignarInicioSegmento(nombre, id) {
-        let ultimoSegmento = tabla.slice().reverse().find(seg => seg[0]);
-        let inicio = 0;
-        if (ultimoSegmento) {
-            inicio = ultimoSegmento[2] + 1;
-        }
-        return inicio;
+            break;
+        case 'peor':
+            // Implementa la lógica para el peor ajuste
+            break;
+        case 'mejor':
+            // Implementa la lógica para el mejor ajuste
+            break;
+        default:
+            console.log('Ajuste no reconocido');
+            return;
     }
 
     return tabla;
 }
+
+
 
 function eliminarProceso(programa) {
     let procesosEliminados = {};
@@ -126,31 +193,26 @@ function eliminarProceso(programa) {
     return tabla;
 }
 
+// Test
+let a = { 'p1': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
+let b = { 'p2': { 'id': 0, 'bss': 1000, 'text': 349000, 'data': 2150000, 'stack': 65536, 'heap': 131072 } };
+let c = { 'p3': { 'id': 1, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
+let d = { 'p3': { 'id': 2, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
+let e = { 'p3': { 'id': 3, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
+let f = { 'p3': { 'id': 4, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
 
+segmentacion(a, 'primer');
+segmentacion(b, 'primer');
+segmentacion(c, 'primer');
 
+eliminarProceso(b)
 
-//Test
-let a = { 'p2': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
-let b = { 'p1': { 'id': 0, 'bss': 1000, 'text': 349000, 'data': 2150000, 'stack': 65536, 'heap': 131072 } }
-let c = { 'p2': { 'id': 1, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
-let d = { 'p3': { 'id': 0, 'bss': 11233, 'text': 11500, 'data': 12347, 'stack': 65536, 'heap': 131072 } }
-let e= { 'p1': { 'id': 1, 'bss': 1000, 'text': 349000, 'data': 2150000, 'stack': 65536, 'heap': 131072 } }
-let f= { 'p2': { 'id': 2, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
-
-
-segmentacion(a);
-segmentacion(b);
-segmentacion(c);
-segmentacion(d);
-segmentacion(e)
-
-
-
-eliminarProceso(a);
+segmentacion(d, 'primer');
+segmentacion(b, 'primer');
+segmentacion(e, 'primer');
+segmentacion(f, 'primer');
 
 
 console.log(tabla);
-
-
 
 
