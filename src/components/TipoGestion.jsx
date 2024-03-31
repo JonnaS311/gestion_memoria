@@ -15,7 +15,6 @@ import { options } from '../utils/stack_bar'
 import { useState, createContext, useContext, useEffect } from 'react';
 import Descargar from './Descargar';
 import { color } from '../utils/color';
-import { procesos_cargados } from '../utils/logica_estatica_fija';
 
 ChartJS.register(
     CategoryScale,
@@ -38,12 +37,20 @@ export const useTabla = () => {
     return useContext(TablaContext);
 };
 
-const TipoGestion = (props) => {
+const TipoGestion = ({ algoritmo, ajuste }) => {
+    const [proceso, setProceso] = useState({})
+    const [tablacon, setTabla] = useState([])
+    const [operacion, setOperacion] = useState(true)
+    const [chart, setChart] = useState({
+        labels: ['Memoria 16 Mb'],
+        datasets: []
+    })
+
 
     const generarDataset = () => {
         let objeto = []
-        for (let index = 0; index < Object.keys(tabla).length; index++) {
-            const element = tabla[Object.keys(tabla)[index]];
+        for (let index = 0; index < Object.keys(tablacon).length; index++) {
+            const element = tablacon[Object.keys(tablacon)[index]];
             if (element[0] !== undefined) {
                 objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: color(index) })
             } else {
@@ -53,48 +60,42 @@ const TipoGestion = (props) => {
         return objeto
     }
 
-    const [proceso, setProceso] = useState({})
-    const [tabla, setTabla] = useState([])
-    const [operacion, setOperacion] = useState(true)
-    const [chart, setChart] = useState({
-        labels: ['Memoria 16 Mb'],
-        datasets: []
-    })
+    const cambiarOperacion = () => {
 
-    const updateChartData = () => {
+        setOperacion(!operacion)
+    }
+
+    useEffect(() => {
+        let auxTabla
+        if (ajuste !== undefined) {
+            auxTabla = algoritmo(proceso, ajuste)
+        } else {
+            auxTabla = algoritmo(proceso)
+        }
+        setTabla(Array.from(auxTabla))
+    }, [proceso, algoritmo, ajuste])
+
+    useEffect(() => {
         // nuevos datos
         let datos = {
             ...chart,
             datasets: generarDataset()
         }
         setChart(datos);
-    };
-
-    const cambiarOperacion = () => {
-        /*if (operacion) {
+        if (operacion) {
+            /*
             if (JSON.stringify(procesos_cargados) !== JSON.stringify(Object.keys(proceso))) {
-                for (let index = 0; index < procesos_cargados.length; index++) {
-
+                console.log(procesos_cargados)
+                for (let index = 0; index < Object.keys(proceso).length; index++) {
+                    if(!procesos_cargados.includes(Object.keys(proceso)[index])){
+                        const a = proceso
+                        delete a[Object.keys(proceso)[index]]
+                        setProceso(a)
+                    }
                 }
-            }
-        }*/
-        setOperacion(!operacion)
-    }
-
-    useEffect(() => {
-        let auxTabla
-        if (props.ajuste !== undefined) {
-            auxTabla = props.algoritmo(proceso, props.ajuste)
-        } else {
-            auxTabla = props.algoritmo(proceso)
+            }*/
         }
-        setTabla(auxTabla)
-        updateChartData()
-    }, [proceso])
-
-    useEffect(() => {
-        updateChartData()
-    }, [tabla])
+    }, [tablacon])
 
     return (
         <div className='fija'>
@@ -105,12 +106,12 @@ const TipoGestion = (props) => {
                     {operacion && <Cargador></Cargador>}
                     {!operacion && <Descargar></Descargar>}
                 </ProcesoContext.Provider>
-                <TablaContext.Provider value={{ tabla }}>
+                <TablaContext.Provider value={{ tablacon }}>
                     <Tabla></Tabla>
                 </TablaContext.Provider>
             </div>
             <div className='bar'>
-                <Bar options={options} data={chart} width={800} height={1000}/>
+                <Bar options={options} data={chart} width={800} height={1000} />
             </div>
         </div>
     );

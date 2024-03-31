@@ -9,21 +9,6 @@
     font-size: 1rem;
 }
 
-button {
-    border: none;
-    height: 2rem;
-    text-align: center;
-    border-radius: 5rem;
-    
-}
-
-button:hover{
-    cursor: pointer;
-}
-p {
-    padding: 1rem;
-}
-
 .procesos {
     height: 20rem;
     overflow: auto;

@@ -6,6 +6,10 @@ let espacio_particionado = 1048576 //parseInt(prompt("valor de la particion en K
 let tabla = []
 export let procesos_cargados = []
 
+export const setProcesos = (val) => {
+    procesos_cargados = val
+}
+
 // cargamos el sistema operativo en la RAM
 let sistema_operativo = 1048575
 tabla.push(['SO',0, sistema_operativo])

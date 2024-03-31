@@ -2,7 +2,15 @@ let espacio_particionado = [3145728, 2097152, 1048576, 4194304, 5242880] //[5242
 
 // nombre-proceso | inicio_mem | final_mem
 let tabla = []
-let procesos_cargados = []
+export let procesos_cargados = []
+
+export const getProcesos = (val) =>{
+    return procesos_cargados 
+}
+
+export const setProcesos = (val) =>{
+    procesos_cargados = val
+}
 
 // cargamos el sistema operativo en la RAM
 let sistema_operativo = 1048575 

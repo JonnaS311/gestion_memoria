@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import TipoGestion from './TipoGestion';
-import { estatica_variable, RAM, setterParticiones } from '../utils/logica_estatica_variable'
+import { estatica_variable, RAM, setterParticiones, procesos_cargados} from '../utils/logica_estatica_variable'
 import '../styles/Particionador.css'
 
 const ParticionadorVar = () => {
@@ -38,8 +38,8 @@ const ParticionadorVar = () => {
                     <div className='cont'>
                         <h2>Algoritmo de memoria estática con partición variable</h2>
                         <span>Memoria por asignar: {total}</span>
-                        <select name="ajuste" onChange={cambio}>
-                            <option value="primer" selected>Primer ajuste</option>
+                        <select name="ajuste" onChange={cambio} defaultValue="primer">
+                            <option value="primer">Primer ajuste</option>
                             <option value="mejor">Mejor ajuste</option>
                             <option value="peor">Peor ajuste</option>
                         </select>
@@ -50,25 +50,27 @@ const ParticionadorVar = () => {
                         <button onClick={aplicar} className='my-button'>Simular</button>
                     </div>
                     <div className='tablaPa'>
-                    <table>
-                        <tr>
-                            <th>Tamaño de la partición</th>
-                        </tr>
-                        {particiones.map((child, index) => {
-                            return (
-                                <tr key={index}>
-                                    <td>{child} Bytes</td>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Tamaño de la partición</th>
                                 </tr>
-                            )
-                        })}
-                    </table>
+                                {particiones.map((child, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{child} Bytes</td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
                     </div>
-                   
+
                 </div>
 
             )}
             {!vista && (
-                <TipoGestion algoritmo={estatica_variable} ajuste={ajuste}></TipoGestion>
+                <TipoGestion algoritmo={estatica_variable} ajuste={ajuste} procesos_cargados={procesos_cargados}></TipoGestion>
             )}
         </div>
     );

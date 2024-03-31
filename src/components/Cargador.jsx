@@ -2,6 +2,7 @@ import { useState } from "react";
 import '../styles/Cargador.css';
 import { useProceso } from "./TipoGestion";
 import { llamarLocalStorage } from "../utils/data";
+import Swal from 'sweetalert2'
 
 const Cargador = () => {
   const itemExistente = localStorage.getItem('data');
@@ -15,7 +16,15 @@ const Cargador = () => {
 
   // definimos las funciones
   const info = (value, e) => {
-    alert(`text: ${value['text']} | data: ${value['data']} | bss: ${value['bss']}`)
+    Swal.fire({
+      title: `Información (${value['nombre']})`,
+      text: `.text: ${value['text']} | .data: ${value['data']} | .bss: ${value['bss']}`,
+      icon: "question",
+      confirmButtonColor: "#333",
+      buttonsStyling: false,
+      iconColor: "#a52a2a",
+      footer: "Recuerde que el heap es de: <strong>65536 Bytes</strong>,<br> mientras que el stack es de: <strong>131072 Bytes</strong>."
+    });
   }
 
   function add(index) {

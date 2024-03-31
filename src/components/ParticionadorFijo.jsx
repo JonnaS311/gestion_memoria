@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TipoGestion from './TipoGestion';
-import { setter_particion, estaticas_fija } from '../utils/logica_estatica_fija'
+import { setter_particion, estaticas_fija} from '../utils/logica_estatica_fija'
 import '../styles/Particionador.css'
 
 const ParticionadorFijo = () => {

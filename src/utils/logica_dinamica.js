@@ -3,7 +3,12 @@ const RAM = 16777216
 
 // nombre-proceso | inicio_mem | final_mem
 let tabla = []
-let procesos_cargados = []
+export let procesos_cargados = []
+
+export const setProcesos = (val) =>{
+    procesos_cargados = val
+}
+
 
 // cargamos el sistema operativo en la RAM
 let sistema_operativo = 1048575
