@@ -8,21 +8,24 @@ var offset = Math.pow(2, 24 - paginas)
 let tabla = []
 
 
-// Tabla de marcos: Marco | PDI ---> Donde el PID: -1 - libre / 0 - SO / > 0 - Ocupado
+// Tabla de marcos: Marco | PID ---> Donde el PID: -1 - libre / 0 - SO / > 0 - Ocupado
 let tablaMarcos = []
 
-// Tabla de páginas: array {'nombre_proceso': {'pagina': x, 'marco': x}}
-let tablaPaginas = {}
+// Tabla de páginas: nombre-proceso | páginas | marco
+let tablaPaginas = []
 
 // cargamos el sistema operativo en la RAM
 let sistema_operativo = 1048575
 
 // inicialización de la tabla
 tabla.push([undefined, 0, offset - 1, 0]);
+tablaMarcos.push([0, -1])
+tablaPaginas.push([undefined, 0, 0])
 
 // cargamos las particiones en la tabla
 for (let i = 0; i < parseInt((RAM) / offset); i++) {
     tabla.push([undefined, tabla[i][2] + 1, tabla[i][2] + offset, i + 1])
+    tablaMarcos.push([i + 1, -1])
 }
 
 // cargamos el sistema operativo a la tabla
@@ -34,6 +37,8 @@ for (let i = 0; i < segmentosSO; i++) {
     const inicio = i * offset
     const fin = Math.min((i + 1) * offset - 1, sistema_operativo)
     tabla[i] = ['SO', inicio, fin, i]
+    tablaMarcos[i] = [i, 0]
+    tablaPaginas[i] = ['SO', i, i]
 
     // Si hay fragmentación interna
     if (fin < (i + 1) * offset - 1) {
@@ -57,6 +62,9 @@ function paginacion(programa) {
 
     // obtenermos los atributos del programa
     for (i = 0; i < proceso.length; i++) {
+
+        var numPag = 0
+
         let programaInfo = programa[proceso[i]];
 
         id = programaInfo.id
@@ -69,8 +77,11 @@ function paginacion(programa) {
     }
 
     // Se recorren todos los segmentos del programa
+
+    
     for (i = 0; i < segmentos.length; i++) {
-        // cargamos el segmentos del programa a la tabla
+
+        // cargamos los segmentos del programa a la tabla
         let cadaSegmentos = Math.ceil(segmentos[i] / offset)
         let nombre
 
@@ -83,6 +94,8 @@ function paginacion(programa) {
         // Recorrer cada sub-segmento en que se puede dividir al segmento, según el tamaño del marco
         for (k = 0; k < cadaSegmentos; k++) {
 
+    
+
             // Se cargan los segmentos en los marcos
             for (j = 0; j < tabla.length; j++) {
                 /*
@@ -94,6 +107,7 @@ function paginacion(programa) {
                     const fin = Math.min((tabla[j][3] + 1) * offset - 1, inicio + (segmentos[i] - offset * k))
                     tabla[j] = [nombre, inicio, fin, tabla[j][3]]
 
+
                     // Si hay fragmentación interna
                     if (fin < (tabla[j][3] + 1) * offset - 1) {
                         const inicioUndefined = fin + 1;
@@ -103,10 +117,37 @@ function paginacion(programa) {
                     break
                 }
             }
+
+            //Se cargan los segmentos a la tabla de marcos
+
+            for (j = 0; j < tablaMarcos.length; j++) {
+
+                if (tablaMarcos[j][1] === -1) {
+                    tablaMarcos[j] = [tablaMarcos[j][0], nombre]
+                    break
+                }
+
+            }
+
+            //Se cargan los segmentos a la tabla de páginas
+
+            for (p = 0; p < tablaMarcos.length; p++) {
+
+                if(tablaMarcos[j][1] != -1  || tablaMarcos[j][1] != 0){
+
+                    tablaPaginas.push([nombre, numPag++ , tablaMarcos[j][0]])
+
+                    break
+                }
+
+            }
+
         }
+
     }
     return tabla, tablaMarcos, tablaPaginas
 }
+
 
 function eliminar_proceso_paginacion(programa) {
     let proceso = Object.keys(programa)
@@ -154,27 +195,54 @@ function eliminar_proceso_paginacion(programa) {
                 */
                 if (tabla[j][0] === nombre) {
                     tabla[j][0] = undefined
+                    tablaMarcos[j][1] = -1
                     // Eliminar la fragmentación interna (¿Qué hago con la fragmentación interna?)
                     if (tabla[j+1][0] === "fraginterna"){
                         tabla.splice(j+1, 1)
                     }
                     break
                 }
+
+
             }
+
+
         }
     }
     return tabla, tablaMarcos, tablaPaginas
 }
 
 
-// Test
 
-let a = { 'p2': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
-let b = { 'p1': { 'id': 0, 'bss': 1000, 'text': 349000, 'data': 2150000, 'stack': 65536, 'heap': 131072 } }
-let c = { 'p2': { 'id': 1, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
-let d = { 'p2': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
+
+// Datos para Test
+
+let a = { 'p1': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
+let b = { 'p2': { 'id': 0, 'bss': 1000, 'text': 349000, 'data': 2150000, 'stack': 65536, 'heap': 131072 } }
+let c = { 'p3': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
+let d = { 'p4': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } }
+
 paginacion(a)
 paginacion(b)
 paginacion(c)
+paginacion(d)
+
+// Test Tabla
+
+console.log("[ NOMBRE -  INICIO - FIN - MARCO ]")
+
 console.log(tabla)
+
+// Test Tabla de Marcos
+
+console.log("[ MARCO -  PID ]")
+
+console.log(tablaMarcos)
+
+
+// Test Tabla de Páginas
+
+console.log( "[ PROCESO - PÁGINA -  MARCO ]" )
+
+console.log(tablaPaginas)
 
