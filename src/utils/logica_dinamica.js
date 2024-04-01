@@ -3,10 +3,10 @@ const RAM = 16777216
 
 // nombre-proceso | inicio_mem | final_mem
 let tabla = []
-export let procesos_cargados = []
+let procesos_cargados = []
 
-export const setProcesos = (val) =>{
-    procesos_cargados = val
+export const getProcesos = () => {
+    return procesos_cargados 
 }
 
 

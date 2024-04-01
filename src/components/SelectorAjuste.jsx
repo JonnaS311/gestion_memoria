@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TipoGestion from './TipoGestion';
-import { dinamica, procesos_cargados } from '../utils/logica_dinamica'
+import { dinamica, getProcesos } from '../utils/logica_dinamica'
 
 const SelectorAjuste = () => {
     const [ajuste, setAjuste] = useState('primer')
@@ -29,7 +29,7 @@ const SelectorAjuste = () => {
                 </div>
             )}
             {!vista && (
-                <TipoGestion algoritmo={dinamica} ajuste={ajuste} procesos_cargados={procesos_cargados}></TipoGestion>
+                <TipoGestion algoritmo={dinamica} ajuste={ajuste} procesos_cargados={getProcesos}></TipoGestion>
             )}
         </div>
     );

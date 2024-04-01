@@ -4,7 +4,7 @@ import '../styles/Nav.css';
 import Adder from './Adder';
 import ParticionadorFijo from './ParticionadorFijo';
 import SelectorAjuste from './SelectorAjuste';
-import { dinamicaCC, procesos_cargados1 } from '../utils/logica_recompactacion'
+import { dinamicaCC, getProcesos } from '../utils/logica_recompactacion'
 import ParticionadorVar from './ParticionadorVar';
 
 const Nav = () => {
@@ -26,7 +26,7 @@ const Nav = () => {
                     <Route path="/fija" element={<ParticionadorFijo></ParticionadorFijo>}></Route>
                     <Route path="/variable" element={<ParticionadorVar></ParticionadorVar>}></Route>
                     <Route path="/dinamica" element={<SelectorAjuste></SelectorAjuste>}></Route>
-                    <Route path="/compactacion" element={<TipoGestion algoritmo={dinamicaCC} procesos_cargados={procesos_cargados1}></TipoGestion>}></Route>
+                    <Route path="/compactacion" element={<TipoGestion algoritmo={dinamicaCC} procesos_cargados={getProcesos}></TipoGestion>}></Route>
                 </Routes>
 
             </Router>

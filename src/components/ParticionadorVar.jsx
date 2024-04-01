@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TipoGestion from './TipoGestion';
-import { estatica_variable, RAM, setterParticiones, procesos_cargados} from '../utils/logica_estatica_variable'
+import { estatica_variable, RAM, setterParticiones, getProcesos} from '../utils/logica_estatica_variable'
 import '../styles/Particionador.css'
 
 const ParticionadorVar = () => {
@@ -70,7 +70,7 @@ const ParticionadorVar = () => {
 
             )}
             {!vista && (
-                <TipoGestion algoritmo={estatica_variable} ajuste={ajuste} procesos_cargados={procesos_cargados}></TipoGestion>
+                <TipoGestion algoritmo={estatica_variable} ajuste={ajuste} procesos_cargados={getProcesos}></TipoGestion>
             )}
         </div>
     );

@@ -37,7 +37,7 @@ export const useTabla = () => {
     return useContext(TablaContext);
 };
 
-const TipoGestion = ({ algoritmo, ajuste }) => {
+const TipoGestion = ({ algoritmo, ajuste,procesos_cargados }) => {
     const [proceso, setProceso] = useState({})
     const [tablacon, setTabla] = useState([])
     const [operacion, setOperacion] = useState(true)
@@ -83,17 +83,16 @@ const TipoGestion = ({ algoritmo, ajuste }) => {
         }
         setChart(datos);
         if (operacion) {
-            /*
-            if (JSON.stringify(procesos_cargados) !== JSON.stringify(Object.keys(proceso))) {
-                console.log(procesos_cargados)
+            if (JSON.stringify(procesos_cargados()) !== JSON.stringify(Object.keys(proceso))) {
+                console.log(procesos_cargados())
                 for (let index = 0; index < Object.keys(proceso).length; index++) {
-                    if(!procesos_cargados.includes(Object.keys(proceso)[index])){
+                    if(!procesos_cargados().includes(Object.keys(proceso)[index])){
                         const a = proceso
                         delete a[Object.keys(proceso)[index]]
                         setProceso(a)
                     }
                 }
-            }*/
+            }
         }
     }, [tablacon])
 

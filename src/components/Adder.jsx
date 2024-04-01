@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Adder.css';
-import { llamarLocalStorage } from '../utils/data'
+import { imprimir, llamarLocalStorage } from '../utils/data'
+import Swal from 'sweetalert2'
 
 const Adder = () => {
     const [formData, setFormData] = useState({
@@ -51,6 +52,23 @@ const Adder = () => {
         }
     }
 
+    const reset = () => {
+        llamarLocalStorage()
+    }
+
+    const visualizar = () => {
+        let tmp = imprimir()
+        Swal.fire({
+            title: "<strong>Programas cargados</strong>",
+            html: tmp,
+            showCloseButton: true,
+            showCancelButton: false,
+            focusConfirm: false,
+            showConfirmButton: false
+        })
+    }
+
+
     return (
         <div className='container'>
             <h2>Añadir proceso nuevo</h2>
@@ -58,7 +76,7 @@ const Adder = () => {
                 Recuerde que el heap es de: <strong>65536 Bytes</strong>, mientras que el stack es de: <strong>131072 Bytes</strong>.
             </span>
             <p>
-                * Recuerde que el .text, .data y.bss son enteros positivos. 
+                * Recuerde que el .text, .data y.bss son enteros positivos.
             </p>
             <form className='formulario' onSubmit={submit}>
                 <input type="text" value={formData.nombre} onChange={handleInputChangeString} name="nombre" placeholder='Nombre del proceso' />
@@ -67,6 +85,14 @@ const Adder = () => {
                 <input type="number" value={formData.bss} onChange={handleInputChange} name="bss" placeholder='.Bss' />
                 <button type="submit">Añadir</button>
             </form>
+            <div className='botones'>
+            <p className='color-white'>
+                Acciones sobre los programas
+            </p>
+            <button onClick={reset} className='my-button'>Reset</button>
+            <button onClick={visualizar} className='my-button'>Visualizar</button>
+            </div>
+            
         </div>
     );
 };

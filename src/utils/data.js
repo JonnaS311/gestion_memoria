@@ -37,3 +37,14 @@ export let data = [
 export const llamarLocalStorage = () =>{
   localStorage.setItem('data', JSON.stringify(data));
 }
+
+
+export const imprimir = () => {
+  const tmp = JSON.parse(localStorage.getItem('data'));
+  let text = ''
+  for (let index = 0; index < tmp.length; index++) {
+    text += `<span> Nombre: ${tmp[index]['nombre']} | .text: ${tmp[index]['text']} | .data: ${tmp[index]['data']} | .bss: ${tmp[index]['bss']}</span> <br><br>`
+  }
+
+  return text
+}
