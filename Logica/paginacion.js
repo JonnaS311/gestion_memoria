@@ -117,38 +117,14 @@ function paginacion(programa) {
                         const fin = Math.min((tabla[j][3] + 1) * offset - 1, inicio + (segmentos[i] - offset * k))
                         tabla[j] = [nombre, inicio, fin, tabla[j][3]]
 
-                        // Si hay fragmentación interna
-                        if (fin < (tabla[j][3] + 1) * offset - 1) {
-                            const inicioUndefined = fin + 1;
-                            const finUndefined = (tabla[j][3] + 1) * offset - 1;
-                            tabla.splice(j + 1, 0, ["fraginterna", inicioUndefined, finUndefined, -1]);
-                        }
-                        break
+                    // Si hay fragmentación interna
+                    if (fin < (tabla[j][3] + 1) * offset - 1) {
+                        const inicioUndefined = fin + 1;
+                        const finUndefined = (tabla[j][3] + 1) * offset - 1;
+                        tabla.splice(j + 1, 0, ["fraginterna", inicioUndefined, finUndefined, -1]);
                     }
+                    break
                 }
-
-                //Se cargan los segmentos a la tabla de marcos
-
-                for (let j = 0; j < tablaMarcos.length; j++) {
-
-                    if (tablaMarcos[j][1] === -1) {
-                        tablaMarcos[j] = [tablaMarcos[j][0], nombre]
-                        break
-                    }
-
-                }
-
-                //Se cargan los segmentos a la tabla de páginas
-
-                for (let p = 0; p < tablaMarcos.length; p++) {
-                    if ((tablaMarcos[p][1] != -1 || tablaMarcos[p][1] != 0)) {
-
-                        tablaPaginas.push([nombre, numPag++, tablaMarcos[p][0]])
-
-                        break
-                    }
-                }
-
             }
         }
     }
@@ -211,7 +187,11 @@ function eliminar_proceso_paginacion(programa) {
                     }
                     break
                 }
+
+
             }
+
+
         }
     }
     return tabla, tablaMarcos, tablaPaginas
@@ -226,7 +206,6 @@ let d = { 'p4': { 'id': 1, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack':
 
 paginacion(a)
 paginacion(b)
-eliminar_proceso_paginacion(a)
 paginacion(c)
 
 // Test Tabla
@@ -234,6 +213,19 @@ paginacion(c)
 console.log("[ NOMBRE -  INICIO - FIN - MARCO ]")
 
 console.log(tabla)
+
+// Test Tabla de Marcos
+
+console.log("[ MARCO -  PID ]")
+
+console.log(tablaMarcos)
+
+
+// Test Tabla de Páginas
+
+console.log( "[ PROCESO - PÁGINA -  MARCO ]" )
+
+console.log(tablaPaginas)
 
 // Test Tabla de Marcos
 
