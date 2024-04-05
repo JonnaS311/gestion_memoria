@@ -22,7 +22,7 @@ tablaMarcos.push([0, -1])
 tablaPaginas.push([undefined, 0, 0])
 
 // cargamos las particiones en la tabla
-for (let i = 0; i < parseInt((RAM) / offset); i++) {
+for (let i = 0; i < parseInt((RAM) / offset) - 1; i++) {
     tabla.push([undefined, tabla[i][2] + 1, tabla[i][2] + offset, i + 1])
     tablaMarcos.push([i + 1, -1])
 }
@@ -117,20 +117,38 @@ function paginacion(programa) {
                         const fin = Math.min((tabla[j][3] + 1) * offset - 1, inicio + (segmentos[i] - offset * k))
                         tabla[j] = [nombre, inicio, fin, tabla[j][3]]
 
-                    // Si hay fragmentación interna
-                    if (fin < (tabla[j][3] + 1) * offset - 1) {
-                        const inicioUndefined = fin + 1;
-                        const finUndefined = (tabla[j][3] + 1) * offset - 1;
-                        tabla.splice(j + 1, 0, ["fraginterna", inicioUndefined, finUndefined, -1]);
+                        // Si hay fragmentación interna
+                        if (fin < (tabla[j][3] + 1) * offset - 1) {
+                            const inicioUndefined = fin + 1;
+                            const finUndefined = (tabla[j][3] + 1) * offset - 1;
+                            tabla.splice(j + 1, 0, ["fraginterna", inicioUndefined, finUndefined, -1]);
+                        }
+                        break
                     }
-                    break
+                }
+
+                //Se cargan los segmentos a la tabla de marcos
+                for (let j = 0; j < tablaMarcos.length; j++) {
+
+                    if (tablaMarcos[j][1] === -1) {
+                        tablaMarcos[j] = [tablaMarcos[j][0], nombre]
+                        break
+                    }
+
+                }
+
+                //Se cargan los segmentos a la tabla de páginas
+                for (let p = 0; p < tablaMarcos.length; p++) {
+                    if ((tablaMarcos[p][1] != -1 || tablaMarcos[p][1] != 0)) {
+
+                        tablaPaginas.push([nombre, numPag++, tablaMarcos[p][0]])
+                        break
+                    }
                 }
             }
         }
-    }
-    return tabla, tablaMarcos, tablaPaginas
-}
-
+    } return tabla, tablaMarcos, tablaPaginas
+} 
 
 function eliminar_proceso_paginacion(programa) {
     let proceso = Object.keys(programa)
@@ -178,20 +196,17 @@ function eliminar_proceso_paginacion(programa) {
                 */
                 if (tabla[j][0] === nombre) {
                     tabla[j][0] = undefined
-                    if (tablaMarcos.length > j){
+                    if (tablaMarcos.length > j) {
                         tablaMarcos[j][1] = -1
                     }
                     // Eliminar la fragmentación interna
                     if (tabla[j + 1][0] === "fraginterna") {
+                        tabla[j][2] += tabla[j+1][2] - tabla[j+1][1] + 1
                         tabla.splice(j + 1, 1)
                     }
                     break
                 }
-
-
             }
-
-
         }
     }
     return tabla, tablaMarcos, tablaPaginas
@@ -206,26 +221,14 @@ let d = { 'p4': { 'id': 1, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack':
 
 paginacion(a)
 paginacion(b)
-paginacion(c)
+eliminar_proceso_paginacion(a)
+eliminar_proceso_paginacion(b)
 
 // Test Tabla
 
 console.log("[ NOMBRE -  INICIO - FIN - MARCO ]")
 
 console.log(tabla)
-
-// Test Tabla de Marcos
-
-console.log("[ MARCO -  PID ]")
-
-console.log(tablaMarcos)
-
-
-// Test Tabla de Páginas
-
-console.log( "[ PROCESO - PÁGINA -  MARCO ]" )
-
-console.log(tablaPaginas)
 
 // Test Tabla de Marcos
 
