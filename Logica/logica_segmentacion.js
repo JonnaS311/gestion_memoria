@@ -1,5 +1,5 @@
 let RAM = 16777216;
-let segmento = 8; // Dato a preguntar
+let segmento = 2; // Dato a preguntar
 let offset = Math.pow(2, 24 - segmento);
 
 let contadorSegmentos = {};
@@ -17,6 +17,9 @@ let cantidad_segmentos = Math.ceil((sistema_operativo + 1) / offset);
 let inicio = 0;
 for (let i = 0; i < cantidad_segmentos; i++) {
     let fin = inicio + offset - 1;
+    if (fin > 1048575) {
+        fin = 1048575;
+    }
     tabla.push(['SO', inicio, fin, i]);
     inicio = fin + 1;
 }
@@ -26,6 +29,12 @@ if (remaining > 0) {
     tabla.push([undefined, inicio, RAM - 1]);
 }
 
+
+let lastSegment = tabla[tabla.length - 1];
+if (lastSegment[2] !== RAM - 1) {
+    tabla.pop();
+    tabla.push([undefined, lastSegment[1], RAM - 1]);
+}
 
 
 function espacio_mayor(tabla, tamaño_min) {
