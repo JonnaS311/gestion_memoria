@@ -45,7 +45,8 @@ const Adder = () => {
                     'nombre': formData.nombre,
                     'text': formData.text,
                     'data': formData.data,
-                    'bss': formData.bss
+                    'bss': formData.bss,
+                    'id':0
                 })
                 localStorage.setItem('data', JSON.stringify(data));
             }

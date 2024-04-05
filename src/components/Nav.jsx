@@ -6,6 +6,8 @@ import ParticionadorFijo from './ParticionadorFijo';
 import SelectorAjuste from './SelectorAjuste';
 import { dinamicaCC, getProcesos } from '../utils/logica_recompactacion'
 import ParticionadorVar from './ParticionadorVar';
+import SelectorPaginas from './SelectorPaginas';
+import SelectorSegmento from './SelectorSegmento';
 
 const Nav = () => {
     return (
@@ -19,6 +21,8 @@ const Nav = () => {
                         <li><Link className='link' to="/variable">Estatica variable</Link></li>
                         <li><Link className='link' to="/dinamica">Dinamica</Link></li>
                         <li><Link className='link' to="/compactacion">Dinamica Compactación</Link></li>
+                        <li><Link className='link' to="/paginacion">Paginación</Link></li>
+                        <li><Link className='link' to="/segmentacion">Segmentación</Link></li>
                     </ul>
                 </nav>
                 <Routes>
@@ -27,6 +31,8 @@ const Nav = () => {
                     <Route path="/variable" element={<ParticionadorVar></ParticionadorVar>}></Route>
                     <Route path="/dinamica" element={<SelectorAjuste></SelectorAjuste>}></Route>
                     <Route path="/compactacion" element={<TipoGestion algoritmo={dinamicaCC} procesos_cargados={getProcesos}></TipoGestion>}></Route>
+                    <Route path="/paginacion" element={<SelectorPaginas></SelectorPaginas>}></Route>
+                    <Route path="/segmentacion" element={<SelectorSegmento></SelectorSegmento>}></Route>
                 </Routes>
 
             </Router>

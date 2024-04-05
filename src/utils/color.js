@@ -12,3 +12,7 @@ const values = [[224, 12, 0],
 export function color(mod) {
     return `rgb(${values[mod%values.length][0]},${values[mod%values.length][1]},${values[mod%values.length][2]})`
 }
+
+export function colorTransparente(mod) {
+    return `rgb(${values[mod%values.length][0]},${values[mod%values.length][1]},${values[mod%values.length][2]},0.2)`
+}

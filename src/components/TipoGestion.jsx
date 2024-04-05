@@ -37,7 +37,7 @@ export const useTabla = () => {
     return useContext(TablaContext);
 };
 
-const TipoGestion = ({ algoritmo, ajuste,procesos_cargados }) => {
+const TipoGestion = ({ algoritmo, ajuste, procesos_cargados }) => {
     const [proceso, setProceso] = useState({})
     const [tablacon, setTabla] = useState([])
     const [operacion, setOperacion] = useState(true)
