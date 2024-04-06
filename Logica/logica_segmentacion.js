@@ -133,17 +133,14 @@ function segmentacion(programa, ajuste) {
             // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
             if (inicio <= fin) {
                 tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
-                tablaBloquesLibres.splice(indexUndefined, 0, [undefined, inicio, fin])
             }
     
             // Mover el segmento undefined al final de la tabla
             let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
             tabla.push(undefinedSegment);
-            tablaBloquesLibres.push(undefinedSegment);
 
             // Reordenar la tabla por inicio de segmento
             tabla.sort((a, b) => a[1] - b[1]);
-            tablaBloquesLibres.sort((a, b) => a[1] - b[1]);
         }
     } else if (ajuste === 'peor') {
         for (let i = 0; i < proceso.length; i++) {
@@ -201,17 +198,15 @@ function segmentacion(programa, ajuste) {
             // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
             if (inicio <= fin) {
                 tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
-                tablaBloquesLibres.splice(indexUndefined, 0, [undefined, inicio, fin])
             }
     
             // Mover el segmento undefined al final de la tabla
             let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
             tabla.push(undefinedSegment);
-            tablaBloquesLibres.push(undefinedSegment);
     
             // Reordenar la tabla por inicio de segmento
             tabla.sort((a, b) => a[1] - b[1]);
-            tablaBloquesLibres.sort((a, b) => a[1] - b[1]);
+
         }
     } else if (ajuste === 'mejor') {
         for (let i = 0; i < proceso.length; i++) {
@@ -269,17 +264,15 @@ function segmentacion(programa, ajuste) {
             // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
             if (inicio <= fin) {
                 tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
-                tablaBloquesLibres.splice(indexUndefined, 0, [undefined, inicio, fin])
             }
     
             // Mover el segmento undefined al final de la tabla
             let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
             tabla.push(undefinedSegment);
-            tablaBloquesLibres.push(undefinedSegment);
-    
+
             // Reordenar la tabla por inicio de segmento
             tabla.sort((a, b) => a[1] - b[1]);
-            tablaBloquesLibres.sort((a, b) => a[1] - b[1]);
+
 
         }
     } else {
@@ -287,27 +280,7 @@ function segmentacion(programa, ajuste) {
         return;
     }
 
-    //Ajustes Tabla de Bloques Libres
-
-    for (let i = 0; i < tablaBloquesLibres.length; i++) {
-        if(tablaBloquesLibres[i][0] === undefined){
-            tablaBloquesLibres[i] = ([tablaBloquesLibres[i][1], tablaBloquesLibres[i][2], tablaBloquesLibres[i][2] - tablaBloquesLibres[i][1]])
-        }else{
-            if(typeof tablaBloquesLibres[i][0] !== "number"){
-                tablaBloquesLibres.splice(i, 1)
-            }
-        }
-    }
-
-    for (let i = 0; i < tablaBloquesLibres.length - 1; i++) {
-        if (tablaBloquesLibres[i][1] + 1 === tablaBloquesLibres[i + 1][0] || tablaBloquesLibres[i][1] === tablaBloquesLibres[i + 1][1]) {
-            tablaBloquesLibres[i][1] = tablaBloquesLibres[i + 1][1];
-            tablaBloquesLibres.splice(i + 1, 1);
-            i--;
-        }
-    }
-
-    return tabla, tablaBloquesLibres, tablaProceso;
+    return tabla;
 }
 
 
@@ -336,43 +309,66 @@ function eliminarProceso(programa) {
             let index = tabla.findIndex(seg => seg[0] === undefined && seg[1] === segEliminado[1] - 1);
             if (index !== -1) {
                 tabla[index][2] = segEliminado[2];
-                tablaBloquesLibres[index][2] = segEliminado[2]
             } else {
                 tabla.push([undefined, segEliminado[1], segEliminado[2]]);
-                tablaBloquesLibres.push([undefined, segEliminado[1], segEliminado[2]])
+                
             }
         });
     });
 
     tabla.sort((a, b) => a[1] - b[1]);
-    tablaBloquesLibres.sort((a, b) => a[1] - b[1]);
 
     // Unir segmentos undefined contiguos
     for (let i = 0; i < tabla.length - 1; i++) {
         if (tabla[i][0] === undefined && tabla[i + 1][0] === undefined) {
             tabla[i][2] = tabla[i + 1][2];
             tabla.splice(i + 1, 1);
+            
             i--;
         }
     }
 
-    for (let i = 0; i < tablaBloquesLibres.length; i++) {
-        if(tablaBloquesLibres[i][0] === undefined){
-            tablaBloquesLibres[i] = ([tablaBloquesLibres[i][1], tablaBloquesLibres[i][2], tablaBloquesLibres[i][2] - tablaBloquesLibres[i][1]])
-        }
-    }
-
-    for (let i = 0; i < tablaBloquesLibres.length - 1; i++) {
-        if (tablaBloquesLibres[i][1] + 1 === tablaBloquesLibres[i + 1][0] || tablaBloquesLibres[i][1] === tablaBloquesLibres[i + 1][1]) {
-            tablaBloquesLibres[i][1] = tablaBloquesLibres[i + 1][1];
-            tablaBloquesLibres[i] = ([tablaBloquesLibres[i][0], tablaBloquesLibres[i][1], tablaBloquesLibres[i][1] - tablaBloquesLibres[i][0]])
-            tablaBloquesLibres.splice(i + 1, 1);
-            i--;
-        }
-    }
-
-    return tabla, tablaBloquesLibres;
+    return tabla;
 }
+
+function GenerarTablas(){
+
+    //Para tabla de Bloques Libres
+    for( let i = 0; i < tabla.length; i++){
+    
+        if(tabla[i][0] === undefined){
+            tablaBloquesLibres.push([tabla[i][1], tabla[i][2], tabla[i][2] - tabla[i][1]])
+            
+        }
+    
+    }
+
+    //Para tabla de Procesos
+    
+    for( let i = 1; i < tabla.length; i++){
+    
+        let segnum = parseInt(tabla[i][3])
+        let binario = segnum.toString(2).padStart(8, '0');
+        let hexa = tabla[i][1].toString(16).toUpperCase();
+    
+        if(tabla[i][0] !== undefined){
+            tablaProceso.push([tabla[i][0], tabla[i][3], binario, tabla[i][1], hexa, (tabla[i][2]-tabla[i][1]), undefined])
+        }
+    
+    }
+    
+    for (let i = 0; i < tablaProceso.length; i++) {
+    
+        if (tablaProceso[i][0].endsWith(`(text)`)) {
+            tablaProceso[i][6] = ('RX')
+        }else{
+            tablaProceso[i][6] = ('RW')
+        }
+    
+    }
+
+}
+
 
 // Test
 let a = { 'p1': { 'id': 0, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
@@ -383,24 +379,28 @@ let e = { 'p3': { 'id': 3, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack':
 let f = { 'p3': { 'id': 4, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
 let g = { 'p3': { 'id': 5, 'bss': 1123, 'text': 115000, 'data': 123470, 'stack': 65536, 'heap': 131072 } };
 
-segmentacion(a, 'peor');
-segmentacion(b, 'peor');
-segmentacion(c, 'peor');
-segmentacion(d, 'peor');
-segmentacion(e, 'peor');
-segmentacion(f, 'peor');
+segmentacion(a, 'primer');
+segmentacion(b, 'primer');
+segmentacion(c, 'primer');
+segmentacion(d, 'primer');
+segmentacion(e, 'primer');
+//segmentacion(f, 'mejor');
 
-eliminarProceso(a)
-eliminarProceso(c)
-eliminarProceso(e)
+eliminarProceso(b)
+eliminarProceso(d)
+eliminarProceso(f)
+ 
+segmentacion(e, 'primer');
 
-
-//segmentacion(e, 'peor');
-
+GenerarTablas();
 
 
 console.log(tabla);
 
 console.log("[ BASE | LÍMITE | TAMAÑO ]")
 console.log(tablaBloquesLibres);
-//console.log(tablaProceso)
+
+console.log("[ TABLA PROCESO ]")
+for( let i = 0; i < tablaProceso.length; i++){
+    console.log(tablaProceso[i])
+}
