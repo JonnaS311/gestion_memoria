@@ -14,7 +14,7 @@ import TablaContigua from './TablaContigua';
 import { options } from '../../utils/stack_bar'
 import { useState, createContext, useContext, useEffect } from 'react';
 import DescargarContigua from './DescargarContigua';
-import { tabla } from '../../utils/paginacion';
+import { resetId } from '../../utils/data';
 
 ChartJS.register(
     CategoryScale,
@@ -31,31 +31,39 @@ export const useProceso = () => {
     return useContext(ProcesoContext);
 };
 
+const InformacionContext = createContext();
+
+export const useInformacion = () => {
+    return useContext(InformacionContext);
+};
+
 const TablaContiguaContext = createContext();
 
 export const useTablaContigua = () => {
     return useContext(TablaContiguaContext);
 };
 
-const TipoContigua = ({ carga, descarga, ajuste, nombre, inicio }) => {
+const TipoContigua = ({ carga, descarga, ajuste, nombre, inicio, nombreT, nombreTa }) => {
     const [proceso, setProceso] = useState([])
     const [Tablacon, setTabla] = useState([])
+    const [informacion, setInformacion] = useState([])
     const [operacion, setOperacion] = useState(true)
     const [chart, setChart] = useState({
         labels: ['Memoria 16 Mb'],
         datasets: []
     })
 
-    useEffect(()=>{
+    useEffect(() => {
+        resetId()
         setTabla(inicio)
-    },[])
+    }, [])
 
     const generarDataset = () => {
         let objeto = []
         for (let index = 0; index < Object.keys(Tablacon).length; index++) {
             const element = Tablacon[Object.keys(Tablacon)[index]];
             if (element[0] !== undefined && element[0] !== 'fraginterna') {
-                objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: "rgb(255, 0, 0)", borderWidth: 1 })
+                objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: "rgb(255, 0, 0)", borderWidth: 2, borderColor: `rgb(255,0,0,0.3)` })
             } else if (element[0] === 'fraginterna') {
                 objeto.push({ label: element[0], data: [element[2] - element[1]], backgroundColor: "rgba(255, 0, 0, 0.1)", borderWidth: 1 })
             }
@@ -82,19 +90,25 @@ const TipoContigua = ({ carga, descarga, ajuste, nombre, inicio }) => {
     return (
         <div className='fija'>
             <div className='info'>
-                {operacion && <button className='cambio' onClick={cambiarOperacion}>Eliminar Procesos</button>}
-                {!operacion && <button className='cambio' onClick={cambiarOperacion}>Añadir Procesos</button>}
+                {operacion && (
+                        <button className='cambio' onClick={cambiarOperacion}>Eliminar Procesos</button>
+                )}
+                {!operacion && (
+                        <button className='cambio' onClick={cambiarOperacion}>Añadir Procesos</button>
+                )}
+                <InformacionContext.Provider value={{ informacion, setInformacion }}>
                 <TablaContiguaContext.Provider value={{ Tablacon, setTabla }}>
                     <ProcesoContext.Provider value={{ proceso, setProceso }}>
-                        {operacion && <CargadorContigua carga={carga} ajuste={ajuste}></CargadorContigua>}
+                        {operacion && <CargadorContigua carga={carga} ajuste={ajuste} nombreT={nombreT} nombreTa={nombreTa}></CargadorContigua>}
                         {!operacion && <DescargarContigua descarga={descarga} ajuste={ajuste}></DescargarContigua>}
                     </ProcesoContext.Provider>
 
                     <TablaContigua nombre={nombre}></TablaContigua>
                 </TablaContiguaContext.Provider>
+                </InformacionContext.Provider>
             </div>
             <div className='bar'>
-                <Bar options={options} data={chart} width={800} height={15500} />
+                <Bar options={options} data={chart} width={800} height={25000} />
             </div>
         </div>
     );

@@ -42,7 +42,7 @@ const SelectorPaginas = () => {
                     <button onClick={cambiar}>Seleccionar paginas</button>
                 </div>
             )}
-            {control && (<TipoContigua carga={paginacion} descarga={eliminar_proceso_paginacion} nombre={"marcos"} inicio={inicio}></TipoContigua>)}
+            {control && (<TipoContigua carga={paginacion} descarga={eliminar_proceso_paginacion} nombre={"marcos"} inicio={inicio} nombreT={['Tabla de marcos','marco | PID <br>']} nombreTa={['Tabla de paginas',"nombre-proceso | páginas | marco <br>"]}></TipoContigua>)}
         </div>
     );
 };

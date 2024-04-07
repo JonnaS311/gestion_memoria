@@ -58,3 +58,14 @@ button:hover {
 p {
   padding: 1rem;
 }
+
+
+.flex-boton {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 1rem;
+  align-items: center;
+}

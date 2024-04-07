@@ -1,4 +1,5 @@
 export const options = {
+  animation: false,
   maintainAspectRatio: false,
     plugins: {
       title: {
@@ -19,6 +20,7 @@ export const options = {
         beginAtZero: true,
         ticks: {
           // cambia los limites de la gráfica
+          precision: 0,
           stepSize: 1048576
         }
       },

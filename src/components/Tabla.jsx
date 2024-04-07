@@ -18,6 +18,7 @@ const Tabla = () => {
                             <td>{child[0]}</td>
                             <td>{child[1]}</td>
                             <td>{child[2]}</td>
+                            <td>{child[3]}</td>
                         </tr>
                     ))}
                 </tbody>

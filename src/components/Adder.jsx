@@ -74,7 +74,7 @@ const Adder = () => {
         <div className='container'>
             <h2>Añadir proceso nuevo</h2>
             <span>
-                Recuerde que el heap es de: <strong>65536 Bytes</strong>, mientras que el stack es de: <strong>131072 Bytes</strong>.
+                Recuerde que el stack es de: <strong>65536 Bytes</strong>, mientras que el heap es de: <strong>131072 Bytes</strong>.
             </span>
             <p>
                 * Recuerde que el .text, .data y.bss son enteros positivos.

@@ -22,7 +22,6 @@ const SelectorSegmento = () => {
     const cambiar = (e) => {
         if (segmentos > 0 && segmentos <= 11) {
             setinicio(setter(parseInt(segmentos)))
-
             setControl(true)
         }
         else {
@@ -55,7 +54,7 @@ const SelectorSegmento = () => {
                     <button onClick={cambiar}>Seleccionar segmentos</button>
                 </div>
             )}
-            {control && (<TipoContigua carga={segmentacion} descarga={eliminarProceso} ajuste={ajuste} nombre={'offset'} inicio={inicio}></TipoContigua>)}
+            {control && (<TipoContigua carga={segmentacion} descarga={eliminarProceso} ajuste={ajuste} nombre={'offset'} inicio={inicio} nombreTa={['Tabla de bloques libres','Inicio | Fin | Fin - Inicio <br>']} nombreT={['Tabla de procesos','Segmentos | Segmentos Bin | Inicio Decimal | Inicio Hex | Limite | Permisos <br>']}></TipoContigua>)}
         </div>
     );
 };

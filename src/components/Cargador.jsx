@@ -23,7 +23,7 @@ const Cargador = () => {
       confirmButtonColor: "#333",
       buttonsStyling: false,
       iconColor: "#a52a2a",
-      footer: "Recuerde que el heap es de: <strong>65536 Bytes</strong>,<br> mientras que el stack es de: <strong>131072 Bytes</strong>."
+      footer: "Recuerde que el stack es de: <strong>65536 Bytes</strong>,<br> mientras que el heap es de: <strong>131072 Bytes</strong>."
     });
   }
 
