@@ -23,7 +23,7 @@ tabla.push([undefined, 0, offset - 1, 0]);
 tablaMarcos.push([0, -1])
 
 // cargamos las particiones en la tabla
-for (let i = 0; i < parseInt((RAM) / offset) - 1; i++) {
+for (let i = 0; i <= parseInt((RAM) / offset) - 1; i++) {
     tabla.push([undefined, tabla[i][2] + 1, tabla[i][2] + offset, i + 1])
     tablaMarcos.push([i + 1, -1])
 }
@@ -136,7 +136,7 @@ export function paginacion(programa) {
                 vive = true
             }
         });
-
+        console.log(tabla)
         if (!vive) {
             console.log("El programa no cabe en la memoria :C")
             eliminar_proceso_paginacion(programa)
@@ -167,27 +167,27 @@ export function paginacion(programa) {
                 }
 
                 //Se cargan los segmentos a la tabla de marcos y páginas
-            for (let j = 0; j < tablaMarcos.length; j++) {
+                for (let j = 0; j < tablaMarcos.length; j++) {
 
                     if (tablaMarcos[j][1] === -1) {
                         tablaMarcos[j] = [tablaMarcos[j][0], nombre]
 
-                        if(tablaMarcos[j][1] !== 0 || tablaMarcos[j][1] !== -1){
+                        if (tablaMarcos[j][1] !== 0 || tablaMarcos[j][1] !== -1) {
                             tablaPaginas.push([nombre, numPag++, tablaMarcos[j][0]])
                         }
                         break
                     }
 
                 }
-               
+
 
             }
         }
 
-    } 
+    }
     tablaPaginas[0][0] = 'SO'
     return [tabla, tablaMarcos, tablaPaginas]
-} 
+}
 
 
 export function eliminar_proceso_paginacion(programa) {
@@ -238,10 +238,10 @@ export function eliminar_proceso_paginacion(programa) {
 
                     tabla[j][0] = undefined
 
-                    // Eliminar la fragmentación interna
-                    if(j<tabla.length-1){
+                    if (j + 1 < tabla.length) {
+                        // Eliminar la fragmentación interna
                         if (tabla[j + 1][0] === "fraginterna") {
-                            tabla[j][2] += tabla[j+1][2] - tabla[j+1][1] + 1
+                            tabla[j][2] += tabla[j + 1][2] - tabla[j + 1][1] + 1
                             tabla.splice(j + 1, 1)
                         }
                     }
@@ -261,16 +261,15 @@ export function eliminar_proceso_paginacion(programa) {
             for (let j = 0; j < tablaPaginas.length; j++) {
 
                 if (tablaPaginas[j][0] === nombre) {
-                        tablaPaginas.splice(j, 1)
+                    tablaPaginas.splice(j, 1)
                     break
                 }
-        
+
             }
 
         }
 
     }
-
     return [tabla, tablaMarcos, tablaPaginas]
 }
 
@@ -305,3 +304,4 @@ console.log(tablaMarcos)
 console.log("[ PROCESO - PÁGINA -  MARCO ]")
 
 console.log(tablaPaginas)*/
+
