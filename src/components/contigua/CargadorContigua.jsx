@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import '../../styles/Cargador.css';
 import { useInformacion, useProceso, useTablaContigua } from "./TipoContigua";
 import { llamarLocalStorage } from "../../utils/data";
@@ -16,6 +16,7 @@ const CargadorContigua = ({ carga, ajuste, nombreT, nombreTa }) => {
   const { proceso, setProceso } = useProceso()
   const { Tablacon, setTabla } = useTablaContigua()
   const { informacion, setInformacion } = useInformacion()
+  const [candidato, setCandidato] = useState([])
 
   // definimos las funciones
   const info = (value, e) => {
@@ -54,19 +55,36 @@ const CargadorContigua = ({ carga, ajuste, nombreT, nombreTa }) => {
         'stack': 65536,
       }
     }
-    proceso.push(objetoCon)
     if (ajuste !== undefined) {
       let test = carga(objeto, ajuste)
       setTabla(Array.from(test))
       setInformacion(GenerarTablas())
+      console.log(informacion)
     } else {
       let test = carga(objeto)
       setTabla(Array.from(test[0]))
       test.splice(0,1)
       setInformacion(test)
     }
-    setProceso(Array.from(proceso))
+    setCandidato(objetoCon)
   }
+
+  useEffect(()=>{
+    if(informacion[2]){
+      proceso.push(candidato)
+      setProceso(Array.from(proceso))
+    }
+  },[informacion])
+
+  useEffect(()=>{
+    console.log(Array.isArray(proceso[proceso.length-1]) && proceso[proceso.length-1].length === 0)
+   if(Array.isArray(proceso[proceso.length-1]) && proceso[proceso.length-1].length === 0 ){
+     proceso.pop()
+    setProceso(proceso)
+    console.log(proceso)
+   }
+  },[])
+
 
   const vista1 = () => {
     if (informacion.length > 0) {

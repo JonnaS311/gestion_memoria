@@ -1,6 +1,7 @@
 let RAM = 16777216;
 let segmento = 2; // Dato a preguntar
 let offset = Math.pow(2, 24 - segmento);
+let eliminarTodo = true
 
 let contadorSegmentos = {};
 let tabla = [];
@@ -43,6 +44,7 @@ export function setter(value) {
     contadorSegmentos = {};
     tabla = [];
     
+    eliminarTodo = true
     //Segmentos | Segmentos Bin | Inicio Decimal [2] | Inicio Hex [2] | Limite [Fin - Inicio] | Permisos [text(RX); el resto (RW)]
     tablaProceso = []
     // Inicio | Fin | Fin - Inicio
@@ -116,7 +118,7 @@ function espacio_ajustado(tabla, tamaño_min) {
 
 export function segmentacion(programa, ajuste) {
     let proceso = Object.keys(programa);
-    let eliminarTodo = true
+    eliminarTodo = true
 
     if (ajuste === 'primer') {
         for (let i = 0; i < proceso.length; i++) {
@@ -427,5 +429,5 @@ export function GenerarTablas(){
         }
     
     }
-    return [tablaBloquesLibres, tablaProceso]
+    return [tablaBloquesLibres, tablaProceso, eliminarTodo]
 }
