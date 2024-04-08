@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import '../../styles/Cargador.css';
 import { useInformacion, useProceso, useTablaContigua } from "./TipoContigua";
 import { llamarLocalStorage } from "../../utils/data";
@@ -58,7 +58,6 @@ const CargadorContigua = ({ carga, ajuste, nombreT, nombreTa }) => {
     if (ajuste !== undefined) {
       let test = carga(objeto, ajuste)
       setTabla(Array.from(test))
-      console.log(GenerarTablas())
       setInformacion(GenerarTablas())
     } else {
       let test = carga(objeto)
@@ -72,7 +71,7 @@ const CargadorContigua = ({ carga, ajuste, nombreT, nombreTa }) => {
   const vista1 = () => {
     if (informacion.length > 0) {
       let matrizString = nombreT[1]
-      matrizString += informacion[0].map(subArray => subArray.join(' | ')).join('<br>')
+      matrizString += informacion[0].map((subArray) => subArray.join(' | ')).join('<br>')
       Swal.fire({
         title: nombreT[0],
         width: 700,
@@ -96,12 +95,19 @@ const CargadorContigua = ({ carga, ajuste, nombreT, nombreTa }) => {
 
   const vista2 = () => {
     if (informacion.length > 0) {
-      let matrizString =  nombreTa[1]
-      matrizString += informacion[1].map(subArray => subArray.join(' | ')).join('<br>');
-      console.log(matrizString)
+      console.log(informacion)
+      let matrizString = informacion[1].map((subArray) => {
+        console.log(subArray)
+        if(subArray[1]===0){
+          return `<br>${subArray.join(' | ')}`
+        }
+        return subArray.join(' | ')
+      }).join('<br>')
+     matrizString = nombreTa[1] + matrizString + '<br>'
       Swal.fire({
         title: nombreTa[0],
         html: matrizString,
+        width: 700,
         icon: "question",
         confirmButtonColor: "#333",
         buttonsStyling: false,

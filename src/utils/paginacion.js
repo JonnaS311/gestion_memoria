@@ -82,7 +82,7 @@ export function setter(valor) {
     return tabla
 }
 
-// Entrada: Array de objetos {'p1':{'id':0, 'bss':100, 'text':100, 'data':8383, 'stack':444, 'heap':6666}}
+
 
 
 // Entrada: Array de objetos {'p1':{'id':0, 'bss':100, 'text':100, 'data':8383, 'stack':444, 'heap':6666}}
@@ -178,10 +178,14 @@ export function paginacion(programa) {
                     }
 
                 }
+               
 
             }
         }
-    } return [tabla, tablaMarcos, tablaPaginas]
+
+    } 
+    tablaPaginas[0][0] = 'SO'
+    return [tabla, tablaMarcos, tablaPaginas]
 } 
 
 
@@ -234,11 +238,12 @@ export function eliminar_proceso_paginacion(programa) {
                     tabla[j][0] = undefined
 
                     // Eliminar la fragmentación interna
-                    if (tabla[j + 1][0] === "fraginterna") {
-                        tabla[j][2] += tabla[j+1][2] - tabla[j+1][1] + 1
-                        tabla.splice(j + 1, 1)
+                    if(j<tabla.length-1){
+                        if (tabla[j + 1][0] === "fraginterna") {
+                            tabla[j][2] += tabla[j+1][2] - tabla[j+1][1] + 1
+                            tabla.splice(j + 1, 1)
+                        }
                     }
-
                     break
                 }
 

@@ -54,7 +54,7 @@ const SelectorSegmento = () => {
                     <button onClick={cambiar}>Seleccionar segmentos</button>
                 </div>
             )}
-            {control && (<TipoContigua carga={segmentacion} descarga={eliminarProceso} ajuste={ajuste} nombre={'offset'} inicio={inicio} nombreTa={['Tabla de bloques libres','Inicio | Fin | Fin - Inicio <br>']} nombreT={['Tabla de procesos','Segmentos | Segmentos Bin | Inicio Decimal | Inicio Hex | Limite | Permisos <br>']}></TipoContigua>)}
+            {control && (<TipoContigua carga={segmentacion} descarga={eliminarProceso} ajuste={ajuste} nombre={'offset'} inicio={inicio} nombreT={['Tabla de bloques libres','Inicio | Fin | Fin - Inicio <br>']} nombreTa={['Tabla de procesos','Segmentos | Segmentos Bin | Inicio Decimal | Inicio Hex | Limite | Permisos <br>']}></TipoContigua>)}
         </div>
     );
 };

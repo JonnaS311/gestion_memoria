@@ -44,6 +44,7 @@ export const useTablaContigua = () => {
 };
 
 const TipoContigua = ({ carga, descarga, ajuste, nombre, inicio, nombreT, nombreTa }) => {
+    let tabla_anterior = []
     const [proceso, setProceso] = useState([])
     const [Tablacon, setTabla] = useState([])
     const [informacion, setInformacion] = useState([])
@@ -74,37 +75,70 @@ const TipoContigua = ({ carga, descarga, ajuste, nombre, inicio, nombreT, nombre
         return objeto
     }
 
+// Comparación elemento por elemento
+function matricesSonIguales(mat1, mat2) {
+    if (mat1.length !== mat2.length) {
+      return false;
+    }
+    for (let i = 0; i < mat1.length; i++) {
+      if (!arraysSonIguales(mat1[i], mat2[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  function arraysSonIguales(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+
+
     const cambiarOperacion = () => {
         setOperacion(!operacion)
     }
 
     useEffect(() => {
-        // nuevos datos
-        let datos = {
-            ...chart,
-            datasets: generarDataset()
+        //validar que la tabla anterior es diferente a la actual, esto nos verifica que el proceso si entró y por tanto no toca hacer pop a los procesos cargados
+        if (true) {
+            // nuevos datos
+            let datos = {
+                ...chart,
+                datasets: generarDataset()
+            }
+            setChart(datos);
+        }else{
+            proceso.pop()
+            setProceso(proceso)
         }
-        setChart(datos);
     }, [Tablacon])
 
     return (
         <div className='fija'>
             <div className='info'>
                 {operacion && (
-                        <button className='cambio' onClick={cambiarOperacion}>Eliminar Procesos</button>
+                    <button className='cambio' onClick={cambiarOperacion}>Eliminar Procesos</button>
                 )}
                 {!operacion && (
-                        <button className='cambio' onClick={cambiarOperacion}>Añadir Procesos</button>
+                    <button className='cambio' onClick={cambiarOperacion}>Añadir Procesos</button>
                 )}
                 <InformacionContext.Provider value={{ informacion, setInformacion }}>
-                <TablaContiguaContext.Provider value={{ Tablacon, setTabla }}>
-                    <ProcesoContext.Provider value={{ proceso, setProceso }}>
-                        {operacion && <CargadorContigua carga={carga} ajuste={ajuste} nombreT={nombreT} nombreTa={nombreTa}></CargadorContigua>}
-                        {!operacion && <DescargarContigua descarga={descarga} ajuste={ajuste}></DescargarContigua>}
-                    </ProcesoContext.Provider>
+                    <TablaContiguaContext.Provider value={{ Tablacon, setTabla }}>
+                        <ProcesoContext.Provider value={{ proceso, setProceso }}>
+                            {operacion && <CargadorContigua carga={carga} ajuste={ajuste} nombreT={nombreT} nombreTa={nombreTa}></CargadorContigua>}
+                            {!operacion && <DescargarContigua descarga={descarga} ajuste={ajuste}></DescargarContigua>}
+                        </ProcesoContext.Provider>
 
-                    <TablaContigua nombre={nombre}></TablaContigua>
-                </TablaContiguaContext.Provider>
+                        <TablaContigua nombre={nombre}></TablaContigua>
+                    </TablaContiguaContext.Provider>
                 </InformacionContext.Provider>
             </div>
             <div className='bar'>

@@ -1,11 +1,14 @@
-import { useProceso, useTablaContigua } from "./TipoContigua";
+import { useInformacion, useProceso, useTablaContigua } from "./TipoContigua";
 import '../../styles/Cargador.css';
+import { GenerarTablas } from "../../utils/logica_segmentacion";
 
 const DescargarContigua = ({ descarga, ajuste }) => {
     const { proceso, setProceso } = useProceso()
     const { Tablacon, setTabla } = useTablaContigua()
+    const { informacion, setInformacion } = useInformacion()
 
     const eliminarProceso = (element) => {
+        debugger 
         let obj = proceso
         let eliminado = obj.splice(element, 1)[0]
         let nombre = Object.keys(eliminado)[0].substring(0, Object.keys(eliminado)[0].length - (2 + eliminado[Object.keys(eliminado)[0]].id.toString().length))
@@ -15,6 +18,7 @@ const DescargarContigua = ({ descarga, ajuste }) => {
         let test = descarga(eliminado)
         if (ajuste !== undefined) {
             setTabla(Array.from(test))
+            setInformacion(GenerarTablas())
         } else {
             setTabla(Array.from(test[0]))
         }

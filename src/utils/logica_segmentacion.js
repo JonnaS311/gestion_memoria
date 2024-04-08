@@ -37,7 +37,7 @@ if (lastSegment[2] !== RAM - 1) {
 
 export function setter(value) {
     RAM = 16777216;
-    segmento = 2; // Dato a preguntar
+    segmento = value; // Dato a preguntar
     offset = Math.pow(2, 24 - segmento);
     
     contadorSegmentos = {};
@@ -113,8 +113,10 @@ function espacio_ajustado(tabla, tamaño_min) {
         return -1
     }
 }
+
 export function segmentacion(programa, ajuste) {
     let proceso = Object.keys(programa);
+    let eliminarTodo = true
 
     if (ajuste === 'primer') {
         for (let i = 0; i < proceso.length; i++) {
@@ -131,56 +133,64 @@ export function segmentacion(programa, ajuste) {
             asignarSegmento(nombre, id, data, 'data');
             asignarSegmento(nombre, id, bss, 'bss');
             asignarSegmento(nombre, id, heap, 'heap');
-            asignarSegmento(nombre, id, stack, 'stack');
-        }
-        function asignarSegmento(nombre, id, tamaño, tipo) {
-            if (contadorSegmentos[nombre] === undefined) {
-                contadorSegmentos[nombre] = {};
-            }
-    
-            if (contadorSegmentos[nombre][id] === undefined) {
-                contadorSegmentos[nombre][id] = 0;
-            }
-    
-            let cantidadSegmentos = Math.ceil(tamaño / offset);
-    
-            // Buscar el primer segmento undefined que sea lo suficientemente grande
-            let indexUndefined = tabla.findIndex(seg => seg[0] === undefined && (seg[2] - seg[1] + 1) >= tamaño);
-            if (indexUndefined === -1) {
+            asignarSegmento(nombre, id, stack, 'stack'); // false
+            if(!eliminarTodo){
                 eliminarProceso(programa)
-                return;
             }
-    
-            let inicio = tabla[indexUndefined][1];
-            let fin = inicio + tamaño;
-    
-            for (let i = 0; i < cantidadSegmentos; i++) {
-                let tamañoSegmento = Math.min(offset, tamaño - i * offset);
-                fin = inicio + tamañoSegmento;
-                tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
-                inicio = fin + 1;
-                contadorSegmentos[nombre][id]++;
-            }
-    
-            // Actualizar el segmento undefined
-            if (inicio <= tabla[indexUndefined][2]) {
-                tabla[indexUndefined][1] = inicio;
-            } else {
-                tabla.splice(indexUndefined, 1);
-            }
-    
-            // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
-            if (inicio <= fin) {
-                tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
-            }
-    
-            // Mover el segmento undefined al final de la tabla
-            let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
-            tabla.push(undefinedSegment);
-
-            // Reordenar la tabla por inicio de segmento
-            tabla.sort((a, b) => a[1] - b[1]);
         }
+
+        function asignarSegmento(nombre, id, tamaño, tipo) {
+            if(eliminarTodo===true){
+                if (contadorSegmentos[nombre] === undefined) {
+                    contadorSegmentos[nombre] = {};
+                }
+        
+                if (contadorSegmentos[nombre][id] === undefined) {
+                    contadorSegmentos[nombre][id] = 0;
+                }
+        
+                let cantidadSegmentos = Math.ceil(tamaño / offset);
+        
+                // Buscar el primer segmento undefined que sea lo suficientemente grande
+                let indexUndefined = tabla.findIndex(seg => seg[0] === undefined && (seg[2] - seg[1] + 1) >= tamaño);
+                if (indexUndefined === -1) {
+                    eliminarTodo=false
+                    return eliminarTodo;
+                }
+        
+                let inicio = tabla[indexUndefined][1];
+                let fin = inicio + tamaño;
+        
+                for (let i = 0; i < cantidadSegmentos; i++) {
+                    let tamañoSegmento = Math.min(offset, tamaño - i * offset);
+                    fin = inicio + tamañoSegmento;
+                    tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
+                    inicio = fin + 1;
+                    contadorSegmentos[nombre][id]++;
+                }
+        
+                // Actualizar el segmento undefined
+                if (inicio <= tabla[indexUndefined][2]) {
+                    tabla[indexUndefined][1] = inicio;
+                } else {
+                    tabla.splice(indexUndefined, 1);
+                }
+        
+                // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
+                if (inicio <= fin) {
+                    tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
+                }
+        
+                // Mover el segmento undefined al final de la tabla
+                let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
+                tabla.push(undefinedSegment);
+        
+                // Reordenar la tabla por inicio de segmento
+                tabla.sort((a, b) => a[1] - b[1]);
+            }else{
+                eliminarProceso(programa)
+            }
+        } 
     } else if (ajuste === 'peor') {
         for (let i = 0; i < proceso.length; i++) {
             let nombre = proceso[i];
@@ -197,56 +207,63 @@ export function segmentacion(programa, ajuste) {
             asignarSegmento(nombre, id, bss, 'bss');
             asignarSegmento(nombre, id, heap, 'heap');
             asignarSegmento(nombre, id, stack, 'stack');
+            if(!eliminarTodo){
+                eliminarProceso(programa)
+            }
         }
         function asignarSegmento(nombre, id, tamaño, tipo) {
-            if (contadorSegmentos[nombre] === undefined) {
-                contadorSegmentos[nombre] = {};
-            }
-    
-            if (contadorSegmentos[nombre][id] === undefined) {
-                contadorSegmentos[nombre][id] = 0;
-            }
-    
-            let cantidadSegmentos = Math.ceil(tamaño / offset);
-    
-            // Buscar el primer segmento undefined que sea lo suficientemente grande
-            let indexUndefined = espacio_mayor(tabla, tamaño);
-            if (indexUndefined === -1) {
+            if(eliminarTodo===true){
+                if (contadorSegmentos[nombre] === undefined) {
+                    contadorSegmentos[nombre] = {};
+                }
+        
+                if (contadorSegmentos[nombre][id] === undefined) {
+                    contadorSegmentos[nombre][id] = 0;
+                }
+        
+                let cantidadSegmentos = Math.ceil(tamaño / offset);
+        
+                // Buscar el primer segmento undefined que sea lo suficientemente grande
+                let indexUndefined = espacio_mayor(tabla,tamaño)
+                if (indexUndefined === -1) {
+                    eliminarTodo=false
+                    return eliminarTodo;
+                }
+        
+                let inicio = tabla[indexUndefined][1];
+                let fin = inicio + tamaño;
+        
+                for (let i = 0; i < cantidadSegmentos; i++) {
+                    let tamañoSegmento = Math.min(offset, tamaño - i * offset);
+                    fin = inicio + tamañoSegmento;
+                    tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
+                    inicio = fin + 1;
+                    contadorSegmentos[nombre][id]++;
+                }
+        
+                // Actualizar el segmento undefined
+                if (inicio <= tabla[indexUndefined][2]) {
+                    tabla[indexUndefined][1] = inicio;
+                } else {
+                    tabla.splice(indexUndefined, 1);
+                }
+        
+                // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
+                if (inicio <= fin) {
+                    tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
+                }
+        
+                // Mover el segmento undefined al final de la tabla
+                let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
+                tabla.push(undefinedSegment);
+        
+                // Reordenar la tabla por inicio de segmento
+                tabla.sort((a, b) => a[1] - b[1]);
+            }else{
                 eliminarProceso(programa)
-                return;
             }
-    
-            let inicio = tabla[indexUndefined][1];
-            let fin = inicio + tamaño;
-    
-            for (let i = 0; i < cantidadSegmentos; i++) {
-                let tamañoSegmento = Math.min(offset, tamaño - i * offset);
-                fin = inicio + tamañoSegmento;
-                tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
-                inicio = fin + 1;
-                contadorSegmentos[nombre][id]++;
-            }
-    
-            // Actualizar el segmento undefined
-            if (inicio <= tabla[indexUndefined][2]) {
-                tabla[indexUndefined][1] = inicio;
-            } else {
-                tabla.splice(indexUndefined, 1);
-            }
-    
-            // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
-            if (inicio <= fin) {
-                tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
-            }
-    
-            // Mover el segmento undefined al final de la tabla
-            let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
-            tabla.push(undefinedSegment);
-    
-            // Reordenar la tabla por inicio de segmento
-            tabla.sort((a, b) => a[1] - b[1]);
-
-        }
+        } 
+        
     } else if (ajuste === 'mejor') {
         for (let i = 0; i < proceso.length; i++) {
             let nombre = proceso[i];
@@ -263,57 +280,62 @@ export function segmentacion(programa, ajuste) {
             asignarSegmento(nombre, id, bss, 'bss');
             asignarSegmento(nombre, id, heap, 'heap');
             asignarSegmento(nombre, id, stack, 'stack');
+            if(!eliminarTodo){
+                eliminarProceso(programa)
+            }
         }
         function asignarSegmento(nombre, id, tamaño, tipo) {
-            if (contadorSegmentos[nombre] === undefined) {
-                contadorSegmentos[nombre] = {};
-            }
-    
-            if (contadorSegmentos[nombre][id] === undefined) {
-                contadorSegmentos[nombre][id] = 0;
-            }
-    
-            let cantidadSegmentos = Math.ceil(tamaño / offset);
-    
-            // Buscar el primer segmento undefined que sea lo suficientemente grande
-            let indexUndefined = espacio_ajustado(tabla, tamaño);
-            if (indexUndefined === -1) {
+            if(eliminarTodo===true){
+                if (contadorSegmentos[nombre] === undefined) {
+                    contadorSegmentos[nombre] = {};
+                }
+        
+                if (contadorSegmentos[nombre][id] === undefined) {
+                    contadorSegmentos[nombre][id] = 0;
+                }
+        
+                let cantidadSegmentos = Math.ceil(tamaño / offset);
+        
+                // Buscar el primer segmento undefined que sea lo suficientemente grande
+                let indexUndefined = espacio_ajustado(tabla, tamaño)
+                if (indexUndefined === -1) {
+                    eliminarTodo=false
+                    return eliminarTodo;
+                }
+        
+                let inicio = tabla[indexUndefined][1];
+                let fin = inicio + tamaño;
+        
+                for (let i = 0; i < cantidadSegmentos; i++) {
+                    let tamañoSegmento = Math.min(offset, tamaño - i * offset);
+                    fin = inicio + tamañoSegmento;
+                    tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
+                    inicio = fin + 1;
+                    contadorSegmentos[nombre][id]++;
+                }
+        
+                // Actualizar el segmento undefined
+                if (inicio <= tabla[indexUndefined][2]) {
+                    tabla[indexUndefined][1] = inicio;
+                } else {
+                    tabla.splice(indexUndefined, 1);
+                }
+        
+                // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
+                if (inicio <= fin) {
+                    tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
+                }
+        
+                // Mover el segmento undefined al final de la tabla
+                let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
+                tabla.push(undefinedSegment);
+        
+                // Reordenar la tabla por inicio de segmento
+                tabla.sort((a, b) => a[1] - b[1]);
+            }else{
                 eliminarProceso(programa)
-                return;
             }
-    
-            let inicio = tabla[indexUndefined][1];
-            let fin = inicio + tamaño;
-    
-            for (let i = 0; i < cantidadSegmentos; i++) {
-                let tamañoSegmento = Math.min(offset, tamaño - i * offset);
-                fin = inicio + tamañoSegmento;
-                tabla.push([`${nombre}(${id})(${tipo})`, inicio, fin, contadorSegmentos[nombre][id]]);
-                inicio = fin + 1;
-                contadorSegmentos[nombre][id]++;
-            }
-    
-            // Actualizar el segmento undefined
-            if (inicio <= tabla[indexUndefined][2]) {
-                tabla[indexUndefined][1] = inicio;
-            } else {
-                tabla.splice(indexUndefined, 1);
-            }
-    
-            // Si el segmento no se asignó completamente, actualizar el tamaño restante en el segmento undefined
-            if (inicio <= fin) {
-                tabla.splice(indexUndefined, 0, [undefined, inicio, fin]);
-            }
-    
-            // Mover el segmento undefined al final de la tabla
-            let undefinedSegment = tabla.splice(indexUndefined, 1)[0];
-            tabla.push(undefinedSegment);
-
-            // Reordenar la tabla por inicio de segmento
-            tabla.sort((a, b) => a[1] - b[1]);
-
-
-        }
+        } 
     } else {
         console.log('Ajuste no reconocido');
         return;
@@ -321,7 +343,6 @@ export function segmentacion(programa, ajuste) {
 
     return tabla;
 }
-
 
 
 export function eliminarProceso(programa) {
@@ -373,6 +394,7 @@ export function eliminarProceso(programa) {
 export function GenerarTablas(){
 
     //Para tabla de Bloques Libres
+    tablaBloquesLibres = []
     for( let i = 0; i < tabla.length; i++){
     
         if(tabla[i][0] === undefined){
@@ -383,8 +405,8 @@ export function GenerarTablas(){
     }
 
     //Para tabla de Procesos
-    
-    for( let i = 1; i < tabla.length; i++){
+    tablaProceso = []
+    for( let i = 0; i < tabla.length; i++){
     
         let segnum = parseInt(tabla[i][3])
         let binario = segnum.toString(2).padStart(8, '0');
@@ -405,5 +427,5 @@ export function GenerarTablas(){
         }
     
     }
-    return [tablaProceso, tablaBloquesLibres]
+    return [tablaBloquesLibres, tablaProceso]
 }

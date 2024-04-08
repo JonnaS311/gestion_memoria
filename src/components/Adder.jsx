@@ -34,7 +34,7 @@ const Adder = () => {
             llamarLocalStorage()
         }
 
-        if (formData.text !== "" && formData.data !== "" && formData.bss !== "" && formData.text > 0 && formData.data > 0 && formData.bss > 0) {
+        if (formData.text !== "" && formData.data !== "" && formData.bss !== "" && formData.text > 0 && formData.data > 0 && formData.bss > 0 && formData.bss+formData.text+formData.data+65536+131072  < 15728639) {
             const data = JSON.parse(localStorage.getItem('data'));
             const keys = []
             for (let index = 0; index < data.length; index++) {
