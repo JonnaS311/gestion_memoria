@@ -23,7 +23,7 @@ tabla.push([undefined, 0, offset - 1, 0]);
 tablaMarcos.push([0, -1])
 
 // cargamos las particiones en la tabla
-for (let i = 0; i <= parseInt((RAM) / offset) - 1; i++) {
+for (let i = 0; i < parseInt((RAM) / offset) - 1; i++) {
     tabla.push([undefined, tabla[i][2] + 1, tabla[i][2] + offset, i + 1])
     tablaMarcos.push([i + 1, -1])
 }
@@ -49,7 +49,7 @@ for (let i = 0; i < segmentosSO; i++) {
 
 export function setter(valor) {
     paginas = valor // Dato a preguntar
-    offset = Math.pow(2, 24 - paginas) + 1
+    offset = Math.pow(2, 24 - paginas)
     tabla = []
     tablaMarcos = []
     tablaPaginas = []
@@ -59,7 +59,7 @@ export function setter(valor) {
     tablaMarcos.push([0, -1])
     tablaPaginas.push([undefined, 0, 0])
     // cargamos las particiones en la tabla
-    for (let i = 0; i <= parseInt((RAM) / offset) - 1; i++) {
+    for (let i = 0; i < parseInt((RAM) / offset) - 1; i++) {
         tabla.push([undefined, tabla[i][2] + 1, tabla[i][2] + offset, i + 1])
         tablaMarcos.push([i + 1, -1])
     }
@@ -79,6 +79,7 @@ export function setter(valor) {
             tabla.splice(i + 1, 0, ["fraginterna", inicioUndefined, finUndefined, -1]);
         }
     }
+    console.log(tabla)
     return tabla
 }
 
