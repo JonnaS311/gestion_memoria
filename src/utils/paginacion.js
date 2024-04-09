@@ -1,6 +1,7 @@
 // Asignamos una memoria total de 16MiB
 const RAM = 16777216
-
+// validar si el programa entro o no
+let isNuevo = true
 
 let paginas = 8 // Dato a preguntar
 var offset = Math.pow(2, 24 - paginas) + 1
@@ -53,6 +54,7 @@ export function setter(valor) {
     tabla = []
     tablaMarcos = []
     tablaPaginas = []
+    isNuevo = true
     numPag = 0
     sistema_operativo = 1048575
     tabla.push([undefined, 0, offset - 1, 0]);
@@ -79,7 +81,6 @@ export function setter(valor) {
             tabla.splice(i + 1, 0, ["fraginterna", inicioUndefined, finUndefined, -1]);
         }
     }
-    console.log(tabla)
     return tabla
 }
 
@@ -89,6 +90,7 @@ export function setter(valor) {
 // Entrada: Array de objetos {'p1':{'id':0, 'bss':100, 'text':100, 'data':8383, 'stack':444, 'heap':6666}}
 
 export function paginacion(programa) {
+    isNuevo = true
     let proceso = Object.keys(programa)
     let id
     let text
@@ -139,6 +141,7 @@ export function paginacion(programa) {
         console.log(tabla)
         if (!vive) {
             console.log("El programa no cabe en la memoria :C")
+            isNuevo = false
             eliminar_proceso_paginacion(programa)
             break
         } else {
@@ -186,8 +189,8 @@ export function paginacion(programa) {
 
     }
     tablaPaginas[0][0] = 'SO'
-    return [tabla, tablaMarcos, tablaPaginas]
-}
+    return [tabla, tablaMarcos, tablaPaginas, isNuevo]
+} 
 
 
 export function eliminar_proceso_paginacion(programa) {

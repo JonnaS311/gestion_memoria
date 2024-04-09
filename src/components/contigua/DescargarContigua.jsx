@@ -8,7 +8,6 @@ const DescargarContigua = ({ descarga, ajuste }) => {
     const { informacion, setInformacion } = useInformacion()
 
     const eliminarProceso = (element) => {
-        debugger 
         let obj = proceso
         let eliminado = obj.splice(element, 1)[0]
         let nombre = Object.keys(eliminado)[0].substring(0, Object.keys(eliminado)[0].length - (2 + eliminado[Object.keys(eliminado)[0]].id.toString().length))
